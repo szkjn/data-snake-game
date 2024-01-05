@@ -6,7 +6,7 @@ import random
 pygame.init()
 
 # Set up the display window
-window_size = (800, 600)
+window_size = (400, 300)
 window = pygame.display.set_mode(window_size)
 pygame.display.set_caption("Data Snake Game")
 
@@ -28,12 +28,32 @@ data_point_pos = [random.randrange(1, (window_size[0]//snake_size)) * snake_size
 
 clock = pygame.time.Clock()
 
+# Load the logos
+snake_head_img = pygame.image.load('assets/google.png')
+youtube_logo = pygame.image.load('assets/youtube.png')
+doubleclick_logo = pygame.image.load('assets/doubleclick.png')
+admob_logo = pygame.image.load('assets/admob.png')
+
+# Scale logos to fit the snake_size square
+snake_head_img = pygame.transform.scale(snake_head_img, (snake_size, snake_size))
+youtube_logo = pygame.transform.scale(youtube_logo, (snake_size, snake_size))
+doubleclick_logo = pygame.transform.scale(doubleclick_logo, (snake_size, snake_size))
+admob_logo = pygame.transform.scale(admob_logo, (snake_size, snake_size))
+
+
 def draw_snake(window, snake_body):
     for pos in snake_body:
-        pygame.draw.rect(window, white, [pos[0], pos[1], snake_size, snake_size])
+        if pos == snake_body[0]:
+            window.blit(snake_head_img, (pos[0], pos[1]))
+        else:
+            pygame.draw.rect(window, white, [pos[0], pos[1], snake_size, snake_size])
+
 
 def draw_data_point(window, pos):
-    pygame.draw.rect(window, red, [pos[0], pos[1], snake_size, snake_size])
+    if current_special_data_point:
+        window.blit(current_special_data_point, (pos[0], pos[1]))
+    else:
+        pygame.draw.rect(window, red, [pos[0], pos[1], snake_size, snake_size])
 
 def game_over():
     font = pygame.font.SysFont(None, 55)
@@ -51,10 +71,18 @@ def restart_game():
                       random.randrange(0, window_size[1] // snake_size) * snake_size]
     running = True
 
+data_point_counter = 0
+special_data_points = [youtube_logo, doubleclick_logo, admob_logo]
+current_special_data_point = None
+
 def check_collision_with_data_point():
-    global snake_body, data_point_pos
+    global snake_body, data_point_pos, data_point_counter, current_special_data_point
     if snake_pos[0] == data_point_pos[0] and snake_pos[1] == data_point_pos[1]:
-        # Ensure new data point is aligned with the grid
+        data_point_counter += 1
+        if data_point_counter % 3 == 0:
+            current_special_data_point = special_data_points[(data_point_counter // 3 - 1) % len(special_data_points)]
+        else:
+            current_special_data_point = None
         data_point_pos = [random.randrange(0, window_size[0] // snake_size) * snake_size,
                           random.randrange(0, window_size[1] // snake_size) * snake_size]
         return True
@@ -122,7 +150,7 @@ while running:
     window.fill(black)
     draw_snake(window, snake_body)
     draw_data_point(window, data_point_pos)
-    draw_grid()
+    # draw_grid()
     pygame.display.update()
 
     clock.tick(snake_speed)

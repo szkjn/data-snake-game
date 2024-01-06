@@ -1,12 +1,16 @@
 import pygame
 import sys
 import random
+import csv
 
-# Initialize Pygame
+
+# -------------------------------------------------------------------------------------
+#                                   Initialize Pygame
+# -------------------------------------------------------------------------------------
 pygame.init()
 
 # Set up the display window
-window_size = (400, 300)
+window_size = (300, 300)
 window = pygame.display.set_mode(window_size)
 pygame.display.set_caption("Data Snake Game")
 
@@ -30,27 +34,56 @@ data_point_pos = [random.randrange(1, (window_size[0]//snake_size)) * snake_size
 clock = pygame.time.Clock()
 
 # Load the logos
-user_icon = pygame.image.load('assets/user_white.png')
-snake_head_img = pygame.image.load('assets/google_sm.png')
-youtube_logo = pygame.image.load('assets/youtube_sm.png')
-doubleclick_logo = pygame.image.load('assets/doubleclick_sm.png')
-admob_logo = pygame.image.load('assets/admob_sm.png')
+user_icon = pygame.image.load('assets/thumbnail/user_white.png')
+snake_head_img = pygame.image.load('assets/thumbnail/google.png')
+appliedsemantics_logo = pygame.image.load('assets/thumbnail/appliedsemantics.png')
+youtube_logo = pygame.image.load('assets/thumbnail/youtube.png')
+doubleclick_logo = pygame.image.load('assets/thumbnail/doubleclick.png')
+admob_logo = pygame.image.load('assets/thumbnail/admob.png')
 
 # Scale logos to fit the snake_size square
 user_icon = pygame.transform.scale(user_icon, (snake_size, snake_size))
 snake_head_img = pygame.transform.scale(snake_head_img, (snake_size, snake_size))
+
+appliedsemantics_logo = pygame.transform.scale(appliedsemantics_logo, (snake_size, snake_size))
 youtube_logo = pygame.transform.scale(youtube_logo, (snake_size, snake_size))
 doubleclick_logo = pygame.transform.scale(doubleclick_logo, (snake_size, snake_size))
 admob_logo = pygame.transform.scale(admob_logo, (snake_size, snake_size))
 
+special_data_points_info = []
+with open('competitors.csv', newline='', encoding='utf-8') as csvfile:
+    reader = csv.DictReader(csvfile, delimiter=';')
+    for row in reader:
+        special_data_points_info.append(row)
+
+# Mapping logos to their slugs
+# logo_to_slug = {
+#     'appliedsemantics': 'appliedsemantics_logo',
+#     'youtube': 'youtube_logo',
+#     'doubleclick': 'doubleclick_logo',
+#     'admob': 'admob_logo'
+# }
+
+slug_to_logo = {
+    'appliedsemantics': appliedsemantics_logo,
+    'youtube': youtube_logo,
+    'doubleclick': doubleclick_logo,
+    'admob': admob_logo
+}
+
+data_point_counter = 0
+special_data_points = [appliedsemantics_logo, youtube_logo, doubleclick_logo, admob_logo]
+current_special_data_point = None
+current_special_data_point_slug = None
+
+
+# -------------------------------------------------------------------------------------
+#                                   FUNCTIONS
+# -------------------------------------------------------------------------------------
 
 def draw_snake(window, snake_body):
     for pos in snake_body:
         window.blit(snake_head_img, (pos[0], pos[1]))
-        # if pos == snake_body[0]:
-        #     window.blit(snake_head_img, (pos[0], pos[1]))
-        # else:
-        #     pygame.draw.rect(window, white, [pos[0], pos[1], snake_size, snake_size])
 
 
 def draw_data_point(window, pos):
@@ -58,7 +91,7 @@ def draw_data_point(window, pos):
         window.blit(current_special_data_point, (pos[0], pos[1]))
     else:
         window.blit(user_icon, (pos[0], pos[1]))
-        # pygame.draw.rect(window, red, [pos[0], pos[1], snake_size, snake_size])
+
 
 def draw_button_text(text, start_x, start_y, color):
     for letter in text:
@@ -74,6 +107,7 @@ def draw_button_text(text, start_x, start_y, color):
 
         # Move to next grid unit
         start_x += snake_size
+
 
 def game_over():
     global data_point_counter, running
@@ -148,9 +182,6 @@ def restart_game():
                       random.randrange(0, window_size[1] // snake_size) * snake_size]
     running = True
 
-data_point_counter = 0
-special_data_points = [youtube_logo, doubleclick_logo, admob_logo]
-current_special_data_point = None
 
 def generate_data_point():
     while True:
@@ -159,17 +190,57 @@ def generate_data_point():
         if new_position not in snake_body:
             return new_position
 
+
+special_data_point_collided = False
+
 def check_collision_with_data_point():
-    global snake_body, data_point_pos, data_point_counter, current_special_data_point
+    global snake_body, data_point_pos, data_point_counter, current_special_data_point, current_special_data_point_slug, special_data_point_collided
+
     if snake_pos[0] == data_point_pos[0] and snake_pos[1] == data_point_pos[1]:
         data_point_counter += 1
-        if data_point_counter % 3 == 0:
-            current_special_data_point = special_data_points[(data_point_counter // 3 - 1) % len(special_data_points)]
-        else:
-            current_special_data_point = None
+        if data_point_counter % 3 == 0 and not current_special_data_point:
+            index = (data_point_counter // 3 - 1) % len(slug_to_logo)
+            current_special_data_point_slug = list(slug_to_logo.keys())[index]
+            current_special_data_point = slug_to_logo[current_special_data_point_slug]
+        elif current_special_data_point:
+            special_data_point_collided = True
+
         data_point_pos = generate_data_point()
+        draw_grid()
         return True
     return False
+
+
+def display_special_data_point_text(slug):
+    
+    # Get the name and text for the slug
+    name = next((row['name'] for row in special_data_points_info if row['slug'] == slug), "")
+    text = next((row['text'] for row in special_data_points_info if row['slug'] == slug), "")
+
+    # Set up the square dimensions and position
+    square_size = (200, 200)  # Width, Height
+    square_x = (window_size[0] - square_size[0]) // 2
+    square_y = (window_size[1] - square_size[1]) // 2
+
+    # Draw the square
+    pygame.draw.rect(window, black, [square_x, square_y, square_size[0], square_size[1]])
+    pygame.draw.rect(window, white, [square_x, square_y, square_size[0], square_size[1]], 2)  # Border
+
+    # Set up text and logo
+    font = pygame.font.SysFont(None, 24)
+    message = font.render(f'Mouhaha, I just acquired {name}!', True, white)
+    text_surface = font.render(text, True, white)
+
+    # Draw text
+    window.blit(message, (square_x + 10, square_y + 10))
+    window.blit(text_surface, (square_x + 10, square_y + 40))
+
+    # Draw the logo
+    logo = slug_to_logo[slug]
+    window.blit(logo, (square_x + (square_size[0] - snake_size) // 2, square_y + 60))
+
+    pygame.display.update()
+
 
 def draw_grid():
     # Draw faint lines
@@ -190,11 +261,10 @@ def draw_grid():
             pygame.draw.circle(window, dot_color, (x, y), dot_size)
 
 
-# Inside your game loop, after updating positions
-print("Snake Position:", snake_pos)
-print("Data Point Position:", data_point_pos)
-
-# Game loop
+# -------------------------------------------------------------------------------------
+#                                   Game loop
+# -------------------------------------------------------------------------------------
+            
 running = True
 while running:
     for event in pygame.event.get():
@@ -227,29 +297,36 @@ while running:
     if not check_collision_with_data_point():
         snake_body.pop()
 
+    if special_data_point_collided:
+        display_special_data_point_text(current_special_data_point_slug)
+        pygame.time.wait(3000)  # Freeze for 3 seconds
+        current_special_data_point = None
+        current_special_data_point_slug = None
+        special_data_point_collided = False
+
     # Check collision with boundaries
     if (snake_pos[0] >= window_size[0] or snake_pos[0] < 0 or
         snake_pos[1] >= window_size[1] or snake_pos[1] < 0):
         game_over()
-        pygame.time.wait(1000)  # Wait for 2 seconds
+        pygame.time.wait(1000)
         restart_game()
 
     # Check collision with self
     for block in snake_body[1:]:
         if snake_pos == block:
             game_over()
-            pygame.time.wait(1000)  # Wait for 2 seconds
+            pygame.time.wait(1000)
             restart_game()
 
     # Update the display
     window.fill(black)
-    draw_grid()
+    # draw_grid()
     draw_snake(window, snake_body)
     draw_data_point(window, data_point_pos)
     pygame.display.update()
 
     clock.tick(snake_speed)
 
-# Quit Pygame
+
 pygame.quit()
 sys.exit()

@@ -79,6 +79,13 @@ data_point_counter = 0
 special_data_points = [youtube_logo, doubleclick_logo, admob_logo]
 current_special_data_point = None
 
+def generate_data_point():
+    while True:
+        new_position = [random.randrange(0, window_size[0] // snake_size) * snake_size,
+                        random.randrange(0, window_size[1] // snake_size) * snake_size]
+        if new_position not in snake_body:
+            return new_position
+
 def check_collision_with_data_point():
     global snake_body, data_point_pos, data_point_counter, current_special_data_point
     if snake_pos[0] == data_point_pos[0] and snake_pos[1] == data_point_pos[1]:
@@ -87,8 +94,7 @@ def check_collision_with_data_point():
             current_special_data_point = special_data_points[(data_point_counter // 3 - 1) % len(special_data_points)]
         else:
             current_special_data_point = None
-        data_point_pos = [random.randrange(0, window_size[0] // snake_size) * snake_size,
-                          random.randrange(0, window_size[1] // snake_size) * snake_size]
+        data_point_pos = generate_data_point()
         return True
     return False
 
@@ -104,7 +110,7 @@ def draw_grid():
 
 
     # Draw white dots at intersections
-    dot_color = (255, 255, 255)  # White color for the dots
+    dot_color = white  # White color for the dots
     dot_size = 2  # Size of the dots
     for x in range(0, window_size[0], snake_size):  
         for y in range(0, window_size[1], snake_size):

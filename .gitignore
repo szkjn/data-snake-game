@@ -1,2 +1,5 @@
 # Environments
 venv/
+
+# Test files
+test*

@@ -56,14 +56,6 @@ with open('competitors.csv', newline='', encoding='utf-8') as csvfile:
     for row in reader:
         special_data_points_info.append(row)
 
-# Mapping logos to their slugs
-# logo_to_slug = {
-#     'appliedsemantics': 'appliedsemantics_logo',
-#     'youtube': 'youtube_logo',
-#     'doubleclick': 'doubleclick_logo',
-#     'admob': 'admob_logo'
-# }
-
 slug_to_logo = {
     'appliedsemantics': appliedsemantics_logo,
     'youtube': youtube_logo,
@@ -138,9 +130,9 @@ def game_over():
         y_start += snake_size
         x_start = 2 * snake_size
 
-    # Calculate button width based on the text length
-    play_button_width = len("Play") * snake_size
-    quit_button_width = len("Quit") * snake_size
+    # # Calculate button width based on the text length
+    # play_button_width = len("Play") * snake_size
+    # quit_button_width = len("Quit") * snake_size
 
     # # Adjust button positions based on grid
     play_again_button = pygame.Rect(4 * snake_size, 10 * snake_size, 3 * snake_size, snake_size)
@@ -158,13 +150,21 @@ def game_over():
     waiting_for_input = True
     while waiting_for_input:
         for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1):
                 mouse_pos = event.pos
                 if play_again_button.collidepoint(mouse_pos):
                     waiting_for_input = False
                     running = False  # Set running to False to exit the current game loop
                     restart_game()  # Restart the game
                 elif quit_button.collidepoint(mouse_pos):
+                    pygame.quit()
+                    sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_p:
+                    waiting_for_input = False
+                    running = False  # Set running to False to exit the current game loop
+                    restart_game()  # Restart the game
+                elif event.key == pygame.K_q:
                     pygame.quit()
                     sys.exit()
             if event.type == pygame.QUIT:
@@ -218,7 +218,7 @@ def display_special_data_point_text(slug):
     text = next((row['text'] for row in special_data_points_info if row['slug'] == slug), "")
 
     # Set up the square dimensions and position
-    square_size = (200, 200)  # Width, Height
+    square_size = list(map(lambda x: x*0.9, window_size)) # Width, Height
     square_x = (window_size[0] - square_size[0]) // 2
     square_y = (window_size[1] - square_size[1]) // 2
 
@@ -227,17 +227,19 @@ def display_special_data_point_text(slug):
     pygame.draw.rect(window, white, [square_x, square_y, square_size[0], square_size[1]], 2)  # Border
 
     # Set up text and logo
-    font = pygame.font.SysFont(None, 24)
-    message = font.render(f'Mouhaha, I just acquired {name}!', True, white)
-    text_surface = font.render(text, True, white)
-
-    # Draw text
-    window.blit(message, (square_x + 10, square_y + 10))
-    window.blit(text_surface, (square_x + 10, square_y + 40))
+    font = pygame.font.SysFont(None, 22)
+    messages = [
+        "CONGRATS ::)", "YOU'VE JUST ACQUIRED :",  f"{name}"]
+    for i, message in enumerate(messages):
+        message_surface = font.render(message, True, white)
+        window.blit(message_surface, (square_x + 10, square_y + (i+1) * 30))
 
     # Draw the logo
     logo = slug_to_logo[slug]
-    window.blit(logo, (square_x + (square_size[0] - snake_size) // 2, square_y + 60))
+    window.blit(logo, (square_x + (square_size[0] - snake_size) // 2, square_y + 120))
+
+    text_surface = font.render(text, True, white)
+    window.blit(text_surface, (square_x + 10, square_y + 150))
 
     pygame.display.update()
 

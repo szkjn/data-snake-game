@@ -14,6 +14,7 @@ pygame.display.set_caption("Data Snake Game")
 black = (0, 0, 0)
 white = (255, 255, 255)
 red = (255, 0, 0)
+green = (0, 255, 0)
 
 # Snake settings
 snake_size = 20
@@ -59,12 +60,84 @@ def draw_data_point(window, pos):
         window.blit(user_icon, (pos[0], pos[1]))
         # pygame.draw.rect(window, red, [pos[0], pos[1], snake_size, snake_size])
 
+def draw_button_text(text, start_x, start_y, color):
+    for letter in text:
+        # Draw a white background rectangle
+        pygame.draw.rect(window, color, [start_x, start_y, snake_size, snake_size])
+
+        # Render the letter
+        font = pygame.font.SysFont(None, 30)
+        letter_surface = font.render(letter, True, black)
+        letter_x = start_x + (snake_size - letter_surface.get_width()) // 2
+        letter_y = start_y + (snake_size - letter_surface.get_height()) // 2
+        window.blit(letter_surface, (letter_x, letter_y))
+
+        # Move to next grid unit
+        start_x += snake_size
+
 def game_over():
-    font = pygame.font.SysFont(None, 55)
-    message = font.render('Game Over! Press C-Continue or Q-Quit', True, red)
-    window.blit(message, [window_size[0]//6, window_size[1]//3])
+    global data_point_counter, running
+    font = pygame.font.SysFont(None, 30)  # Adjust font size to fit the grid unit
+    messages = ["Game Over !", "You've stuffed",  "yourself with", f"{data_point_counter} data pts!"]
+
+
+    # Set starting position for the message
+    x_start = 2 * snake_size
+    y_start = 4 * snake_size
+
+    # Render each letter
+    for message in messages:
+        for letter in message:
+            # Draw a white background rectangle
+            pygame.draw.rect(window, white, [x_start, y_start, snake_size, snake_size])
+            
+            # Render the letter in black
+            letter_surface = font.render(letter, True, black)
+            letter_x = x_start + (snake_size - letter_surface.get_width()) // 2
+            letter_y = y_start + (snake_size - letter_surface.get_height()) // 2
+            window.blit(letter_surface, (letter_x, letter_y))
+
+            # Move to next grid unit
+            x_start += snake_size
+
+        # Move to the next line
+        y_start += snake_size
+        x_start = 2 * snake_size
+
+    # Calculate button width based on the text length
+    play_button_width = len("Play") * snake_size
+    quit_button_width = len("Quit") * snake_size
+
+    # # Adjust button positions based on grid
+    play_again_button = pygame.Rect(4 * snake_size, 10 * snake_size, 3 * snake_size, snake_size)
+    quit_button = pygame.Rect(8 * snake_size, 10 * snake_size, 3 * snake_size, snake_size)
+
+    pygame.draw.rect(window, [0, 255, 0], play_again_button)  # Green play again button
+    pygame.draw.rect(window, [255, 0, 0], quit_button)  # Red quit button
+
+    # Draw the button text
+    draw_button_text("Play", 4 * snake_size, 10 * snake_size, green)
+    draw_button_text("Quit", 8 * snake_size, 10 * snake_size, red)
+
     pygame.display.flip()
 
+    waiting_for_input = True
+    while waiting_for_input:
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                mouse_pos = event.pos
+                if play_again_button.collidepoint(mouse_pos):
+                    waiting_for_input = False
+                    running = False  # Set running to False to exit the current game loop
+                    restart_game()  # Restart the game
+                elif quit_button.collidepoint(mouse_pos):
+                    pygame.quit()
+                    sys.exit()
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+# Make sure the restart_game function resets all necessary variables to start the game afresh
 def restart_game():
     global snake_pos, snake_body, direction, data_point_pos, running
     snake_pos = [100, 60]
@@ -158,14 +231,14 @@ while running:
     if (snake_pos[0] >= window_size[0] or snake_pos[0] < 0 or
         snake_pos[1] >= window_size[1] or snake_pos[1] < 0):
         game_over()
-        pygame.time.wait(2000)  # Wait for 2 seconds
+        pygame.time.wait(1000)  # Wait for 2 seconds
         restart_game()
 
     # Check collision with self
     for block in snake_body[1:]:
         if snake_pos == block:
             game_over()
-            pygame.time.wait(2000)  # Wait for 2 seconds
+            pygame.time.wait(1000)  # Wait for 2 seconds
             restart_game()
 
     # Update the display

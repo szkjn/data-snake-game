@@ -2,7 +2,8 @@ import pygame
 
 import cfg
 
-font_path = 'assets/font/VT323/VT323-Regular.ttf'
+font_path = "assets/font/VT323/VT323-Regular.ttf"
+
 
 class Button:
     def __init__(self, surface, text, position, size):
@@ -19,6 +20,7 @@ class Button:
         return event.type == pygame.MOUSEBUTTONDOWN and self.rect.collidepoint(
             event.pos
         )
+
 
 def draw_play_zone(window):
     pygame.draw.rect(window, cfg.WHITE, cfg.PLAY_ZONE_RECT, 1)
@@ -38,13 +40,48 @@ def draw_text(surface, text, position, font_size, color):
     surface.blit(text_render, position)
 
 
-def display_welcome_page(window):
+def display_play_page(
+    window, snake, data_point, current_special_data_point, data_point_counter
+):
     window.fill(cfg.BLACK)
+    snake.draw(window)
+
+    # Draw the regular data point if it exists
+    if data_point is not None:
+        data_point.draw(window)
+
+    # Draw the special data point if it exists
+    if current_special_data_point is not None:
+        current_special_data_point.draw(window)
+
+    # Draw the play zone border
+    play_zone_padding = cfg.SNAKE_SIZE
+    play_zone_rect = pygame.Rect(
+        play_zone_padding,
+        play_zone_padding,
+        window.get_size()[0] - 2 * play_zone_padding,
+        window.get_size()[1] - 5 * play_zone_padding,
+    )
+    pygame.draw.rect(window, cfg.WHITE, play_zone_rect, 1)  # 1 is the border width
 
     draw_text(
         window,
+        f"Score: {data_point_counter}",
+        (25, window.get_size()[1] - 4 * play_zone_padding),
+        cfg.FONT_SIZE_L,
+        cfg.WHITE,
+    )
+
+    pygame.display.update()
+
+
+def display_welcome_page(window):
+    window.fill(cfg.BLACK)
+
+    draw_centered_text(
+        window,
         "Welcome to the Game!",
-        (cfg.CENTERED_BUTTON_X, 50),
+        100,
         cfg.FONT_SIZE_XL,
         cfg.WHITE,
     )
@@ -71,16 +108,16 @@ def display_welcome_page(window):
 def display_game_over_page(window, data_point_counter):
     window.fill(cfg.BLACK)
 
-    draw_text(window, "Game Over !", (50, 50), cfg.FONT_SIZE_XL, cfg.WHITE)
+    draw_centered_text(window, "GAME OVER", 100, cfg.FONT_SIZE_XL, cfg.WHITE)
 
-    draw_text(
-        window, f"Score : {data_point_counter}", (50, 75), cfg.FONT_SIZE_XL, cfg.WHITE
+    draw_centered_text(
+        window, f"Score: {data_point_counter}", 125, cfg.FONT_SIZE_XL, cfg.WHITE
     )
 
     # Create and draw buttons
     play_button = Button(
         window,
-        "(P)lay Again",
+        "(P)lay",
         (cfg.CENTERED_BUTTON_X, 200),
         (cfg.BUTTON_WIDTH, cfg.BUTTON_HEIGHT),
     )
@@ -108,8 +145,12 @@ def display_special_page(window, slug, special_data_points_info):
     )
 
     draw_text(window, "Congrats !", (25, 50), cfg.FONT_SIZE_XL, cfg.WHITE)
-    draw_text(window, f"You've just acquired {name}", (25, 75), cfg.FONT_SIZE_XL, cfg.WHITE)
-    draw_text(window, text, (25, 125), cfg.FONT_SIZE_L, cfg.WHITE)
+    draw_text(
+        window, f"You've just acquired {name}", (25, 75), cfg.FONT_SIZE_XL, cfg.WHITE
+    )
+    draw_multiline_text(
+        window, text, (25, 125), cfg.FONT_SIZE_L, cfg.WHITE, cfg.WINDOW_SIZE[0] - 50
+    )
 
     # Create and draw buttons
     play_button = Button(
@@ -119,6 +160,40 @@ def display_special_page(window, slug, special_data_points_info):
         (cfg.BUTTON_WIDTH, cfg.BUTTON_HEIGHT),
     )
     play_button.draw()
-    
+
     draw_play_zone(window)
     pygame.display.update()
+
+
+def draw_multiline_text(surface, text, position, font_size, color, max_line_width):
+    font = pygame.font.Font(font_path, font_size)
+    words = text.split(" ")
+    space = font.size(" ")[0]  # Width of a space.
+    x, y = position
+    line = []
+
+    for word in words:
+        word_surface = font.render(word, True, color)
+        word_width, word_height = word_surface.get_size()
+        if x + word_width >= max_line_width:
+            # If the line width exceeds the limit, render the line and reset it
+            surface.blit(font.render(" ".join(line), True, color), (position[0], y))
+            line = [word]
+            y += word_height  # Move to the next line
+            x = position[0]
+        else:
+            line.append(word)
+            x += word_width + space
+
+    # Render the last line
+    surface.blit(font.render(" ".join(line), True, color), (position[0], y))
+
+
+def draw_centered_text(surface, text, y_pos, font_size, color):
+    font = pygame.font.Font(font_path, font_size)
+    text_surface = font.render(text, True, color)
+    text_rect = text_surface.get_rect()
+
+    text_rect.midtop = (surface.get_width() / 2, y_pos)
+
+    surface.blit(text_surface, text_rect)

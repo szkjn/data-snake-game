@@ -14,14 +14,20 @@ class DataPoint:
     def generate_random_position(self, snake_body):
         """Generate a random position for the data point."""
         while True:
-            x = random.randrange(cfg.PLAY_ZONE_RECT.left, cfg.PLAY_ZONE_RECT.right, cfg.SNAKE_SIZE)
-            y = random.randrange(cfg.PLAY_ZONE_RECT.top, cfg.PLAY_ZONE_RECT.bottom, cfg.SNAKE_SIZE)
+            x = random.randrange(
+                cfg.PLAY_ZONE_RECT.left, cfg.PLAY_ZONE_RECT.right, cfg.SNAKE_SIZE
+            )
+            y = random.randrange(
+                cfg.PLAY_ZONE_RECT.top, cfg.PLAY_ZONE_RECT.bottom, cfg.SNAKE_SIZE
+            )
             position = [x, y]
 
             # Create a rect for the position to check if it's inside the play zone
             position_rect = pygame.Rect(x, y, cfg.SNAKE_SIZE, cfg.SNAKE_SIZE)
 
-            if position not in snake_body and cfg.PLAY_ZONE_RECT.contains(position_rect):
+            if position not in snake_body and cfg.PLAY_ZONE_RECT.contains(
+                position_rect
+            ):
                 return position
 
     def draw(self, window):

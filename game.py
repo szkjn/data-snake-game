@@ -58,19 +58,29 @@ class Game:
     def run(self):
         while self.running:
             if self.state == "WELCOME_STATE":
-                ui.display_welcome_page(self.window)
                 self.handle_welcome_page_events()
+                ui.display_welcome_page(self.window)
             elif self.state == "PLAY_STATE":
                 self.handle_events()
                 self.update_game_state()
-                self.render()
+                ui.display_play_page(
+                    self.window,
+                    self.snake,
+                    self.data_point,
+                    self.current_special_data_point,
+                    self.data_point_counter,
+                )
                 self.clock.tick(cfg.SNAKE_SPEED)
             elif self.state == "SPECIAL_STATE":
-                ui.display_special_page(self.window, self.current_special_data_point_slug, self.special_data_points_info)
                 self.handle_special_page_events()
+                ui.display_special_page(
+                    self.window,
+                    self.current_special_data_point_slug,
+                    self.special_data_points_info,
+                )
             elif self.state == "GAME_OVER_STATE":
-                ui.display_game_over_page(self.window, self.data_point_counter)
                 self.handle_game_over_page_events()
+                ui.display_game_over_page(self.window, self.data_point_counter)
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -108,29 +118,27 @@ class Game:
         ):
             self.game_over()
             self.restart_game()
-            
 
-    def render(self):
-        self.window.fill(cfg.BLACK)
-        self.snake.draw(self.window)
+    # def render(self):
+    #     self.window.fill(cfg.BLACK)
+    #     self.snake.draw(self.window)
 
-        # Draw the regular data point if it exists
-        if self.data_point is not None:
-            self.data_point.draw(self.window)
+    #     # Draw the regular data point if it exists
+    #     if self.data_point is not None:
+    #         self.data_point.draw(self.window)
 
-        # Draw the special data point if it exists
-        if self.current_special_data_point is not None:
-            self.current_special_data_point.draw(self.window)
+    #     # Draw the special data point if it exists
+    #     if self.current_special_data_point is not None:
+    #         self.current_special_data_point.draw(self.window)
 
-        # Draw the play zone border
-        play_zone_padding = cfg.SNAKE_SIZE
-        play_zone_rect = pygame.Rect(play_zone_padding, play_zone_padding, 
-                                     self.window.get_size()[0] - 2 * play_zone_padding, 
-                                     self.window.get_size()[1] - 5 * play_zone_padding)
-        pygame.draw.rect(self.window, cfg.WHITE, play_zone_rect, 1)  # 1 is the border width
+    #     # Draw the play zone border
+    #     play_zone_padding = cfg.SNAKE_SIZE
+    #     play_zone_rect = pygame.Rect(play_zone_padding, play_zone_padding,
+    #                                  self.window.get_size()[0] - 2 * play_zone_padding,
+    #                                  self.window.get_size()[1] - 5 * play_zone_padding)
+    #     pygame.draw.rect(self.window, cfg.WHITE, play_zone_rect, 1)  # 1 is the border width
 
-
-        pygame.display.update()
+    #     pygame.display.update()
 
     def game_over(self):
         self.state = "GAME_OVER_STATE"

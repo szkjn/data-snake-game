@@ -1,7 +1,10 @@
+import sys
 import pygame
-import config
 import random
 import csv
+
+import config
+import ui
 from snake import Snake
 from datapoint import DataPoint, SpecialDataPoint
 
@@ -9,6 +12,7 @@ from datapoint import DataPoint, SpecialDataPoint
 class Game:
     def __init__(self, window):
         self.window = window
+        self.state = "WELCOME_STATE"
         self.snake = Snake()
         self.data_point = DataPoint(self.snake.body)
         self.clock = pygame.time.Clock()
@@ -19,6 +23,9 @@ class Game:
         self.current_special_data_point = None
         self.current_special_data_point_slug = None
         self.special_data_point_collided = False
+
+        self.play_button_rect = pygame.Rect(100, 150, 200, 50)
+        self.quit_button_rect = pygame.Rect(100, 250, 200, 50)
 
     def load_slug_to_logo(self):
         """Load slug to logo mapping."""
@@ -46,21 +53,25 @@ class Game:
                 special_data_points_info.append(row)
         return special_data_points_info
 
-    def generate_data_point_pos(self):
-        """Generate a random position for a data point."""
-        return [
-            random.randrange(1, (config.WINDOW_SIZE[0] // config.SNAKE_SIZE))
-            * config.SNAKE_SIZE,
-            random.randrange(1, (config.WINDOW_SIZE[1] // config.SNAKE_SIZE))
-            * config.SNAKE_SIZE,
-        ]
+    # def generate_data_point_pos(self):
+    #     """Generate a random position for a data point."""
+    #     return [
+    #         random.randrange(1, (config.WINDOW_SIZE[0] // config.SNAKE_SIZE))
+    #         * config.SNAKE_SIZE,
+    #         random.randrange(1, (config.WINDOW_SIZE[1] // config.SNAKE_SIZE))
+    #         * config.SNAKE_SIZE,
+    #     ]
 
     def run(self):
         while self.running:
-            self.handle_events()
-            self.update_game_state()
-            self.render()
-            self.clock.tick(config.SNAKE_SPEED)
+            if self.state == "WELCOME_STATE":
+                ui.display_welcome_page(self.window)
+                self.handle_welcome_page_events()
+            elif self.state == "PLAY_STATE":
+                self.handle_events()
+                self.update_game_state()
+                self.render()
+                self.clock.tick(config.SNAKE_SPEED)
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -68,6 +79,8 @@ class Game:
                 self.running = False
             elif event.type == pygame.KEYDOWN:
                 self.handle_keydown(event)
+                if event.key == pygame.K_q:
+                    self.running = False
 
     def handle_keydown(self, event):
         if event.key == pygame.K_LEFT:
@@ -111,13 +124,91 @@ class Game:
         pygame.display.update()
 
     def game_over(self):
-        # Implement game over logic
-        pass
+        self.restart_game()
+        return
+        font = pygame.font.SysFont(None, 30)  # Adjust font size to fit the grid unit
+        messages = [
+            "Game Over !",
+            "You've stuffed",
+            "yourself with",
+            f"{self.data_point_counter} data pts!",
+        ]
+
+        # Set starting position for the message
+        x_start = 2 * self.snake.size
+        y_start = 4 * self.snake.size
+
+        # Render each letter
+        for message in messages:
+            for letter in message:
+                # Draw a white background rectangle
+                pygame.draw.rect(self.window, config.WHITE, [x_start, y_start, self.snake.size, self.snake.size])
+
+                # Render the letter in black
+                letter_surface = font.render(letter, True, config.BLACK)
+                letter_x = x_start + (self.snake.size - letter_surface.get_width()) // 2
+                letter_y = y_start + (self.snake.size - letter_surface.get_height()) // 2
+                self.window.blit(letter_surface, (letter_x, letter_y))
+
+                # Move to next grid unit
+                x_start += self.snake.size
+
+            # Move to the next line
+            y_start += self.snake.size
+            x_start = 2 * self.snake.size        
+
+        # # Adjust button positions based on grid
+        play_again_button = pygame.Rect(
+            4 * self.snake.size, 10 * self.snake.size, 3 * self.snake.size, self.snake.size
+        )
+        quit_button = pygame.Rect(
+            8 * self.snake.size, 10 * self.snake.size, 3 * self.snake.size, self.snake.size
+        )
+
+        pygame.draw.rect(self.window, [0, 255, 0], play_again_button)  # Green play again button
+        pygame.draw.rect(self.window, [255, 0, 0], quit_button)  # Red quit button
+
+        # Draw the button text
+        # draw_button_text("Play", 4 * snake_size, 10 * snake_size, config.GREEN)
+        # draw_button_text("Quit", 8 * snake_size, 10 * snake_size, config.RED)
+
+        pygame.display.flip()
+
+        waiting_for_input = True
+        while waiting_for_input:
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    mouse_pos = event.pos
+                    if play_again_button.collidepoint(mouse_pos):
+                        waiting_for_input = False
+                        self.running = False
+                        self.restart_game()  # Restart the game
+                    elif quit_button.collidepoint(mouse_pos):
+                        pygame.quit()
+                        sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_p:
+                        waiting_for_input = False
+                        self.running = False
+                        self.restart_game()  # Restart the game
+                    elif event.key == pygame.K_q:
+                        pygame.quit()
+                        sys.exit()
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+
 
     def restart_game(self):
-        # Implement restart game logic
+        """Implement restart game logic."""
         self.snake = Snake()
-        self.data_point_pos = self.generate_data_point_pos()
+        self.data_point = DataPoint(self.snake.body)
+        self.data_point_counter = 0
+        self.current_special_data_point = None
+        self.current_special_data_point_slug = None
+        self.special_data_point_collided = False
+        # self.data_point_pos = self.generate_data_point_pos()
 
     def create_special_data_point(self, slug):
         """Create a special data point based on the slug."""
@@ -141,8 +232,6 @@ class Game:
             self.current_special_data_point
             and head_position == self.current_special_data_point.position
         ):
-            # self.handle_special_data_point_collision()
-            print("SPECIAL COLLISION")
             return True
 
         return False
@@ -153,23 +242,36 @@ class Game:
         self.data_point_counter += 1
 
         if self.data_point_counter % config.SPECIALS_RATE == 0:
-            print("REGULAR COLLISION to SPECIAL")
             index = (self.data_point_counter // config.SPECIALS_RATE) % len(self.slug_to_logo)
             slug = list(self.slug_to_logo.keys())[index]
             self.create_special_data_point(slug)
             self.data_point = None
         else:
-            print("REGULAR COLLISION")
-            self.data_point.reset_position(self.snake.body)  # Generate a new regular data point
+            # Generate a new regular data point
+            self.data_point.reset_position(self.snake.body)
 
     def handle_special_data_point_collision(self):
         """Handle the logic when the snake collides with a special data point."""
         self.snake.grow()
-        print(self.data_point_counter)
 
         # Recreate a new data point randomly
         self.data_point = DataPoint(self.snake.body)
-        # self.data_point.reset_position()
 
         # Remove the current special data point
         self.current_special_data_point = None
+
+
+    def handle_welcome_page_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if self.play_button_rect.collidepoint(event.pos):
+                    self.state = 'PLAY_STATE'  # Change to play state
+                elif self.quit_button_rect.collidepoint(event.pos):
+                    self.running = False  # Exit the game
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_p:
+                    self.state = 'PLAY_STATE'  # Change to play state
+                elif event.key == pygame.K_q:
+                    self.running = False  # Exit the game

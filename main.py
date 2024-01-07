@@ -3,15 +3,29 @@ import sys
 import random
 import csv
 
+import config
+from game import Game
 
+
+def main():
+    pygame.init()
+    window = pygame.display.set_mode(config.WINDOW_SIZE)
+    pygame.display.set_caption("Data Snake Game")
+    game = Game(window)
+    game.run()
+    pygame.quit()
+    sys.exit()
+
+
+if __name__ == "__main__":
+    main()
+
+exit()
 # -------------------------------------------------------------------------------------
 #                                   Initialize Pygame
 # -------------------------------------------------------------------------------------
 pygame.init()
-
-# Set up the display window
-window_size = (300, 300)
-window = pygame.display.set_mode(window_size)
+window = pygame.display.set_mode(config.WINDOW_SIZE)
 pygame.display.set_caption("Data Snake Game")
 
 # Colors
@@ -28,43 +42,52 @@ snake_body = [[100, 60], [80, 60], [60, 60]]
 direction = "RIGHT"
 
 # Data point settings
-data_point_pos = [random.randrange(1, (window_size[0]//snake_size)) * snake_size,
-                  random.randrange(1, (window_size[1]//snake_size)) * snake_size]
+data_point_pos = [
+    random.randrange(1, (config.WINDOW_SIZE[0] // snake_size)) * snake_size,
+    random.randrange(1, (config.WINDOW_SIZE[1] // snake_size)) * snake_size,
+]
 
 clock = pygame.time.Clock()
 
 # Load the logos
-user_icon = pygame.image.load('assets/thumbnail/user_white.png')
-snake_head_img = pygame.image.load('assets/thumbnail/google.png')
-appliedsemantics_logo = pygame.image.load('assets/thumbnail/appliedsemantics.png')
-youtube_logo = pygame.image.load('assets/thumbnail/youtube.png')
-doubleclick_logo = pygame.image.load('assets/thumbnail/doubleclick.png')
-admob_logo = pygame.image.load('assets/thumbnail/admob.png')
+user_icon = pygame.image.load("assets/thumbnail/user_white.png")
+snake_head_img = pygame.image.load("assets/thumbnail/google.png")
+appliedsemantics_logo = pygame.image.load("assets/thumbnail/appliedsemantics.png")
+youtube_logo = pygame.image.load("assets/thumbnail/youtube.png")
+doubleclick_logo = pygame.image.load("assets/thumbnail/doubleclick.png")
+admob_logo = pygame.image.load("assets/thumbnail/admob.png")
 
 # Scale logos to fit the snake_size square
 user_icon = pygame.transform.scale(user_icon, (snake_size, snake_size))
 snake_head_img = pygame.transform.scale(snake_head_img, (snake_size, snake_size))
 
-appliedsemantics_logo = pygame.transform.scale(appliedsemantics_logo, (snake_size, snake_size))
+appliedsemantics_logo = pygame.transform.scale(
+    appliedsemantics_logo, (snake_size, snake_size)
+)
 youtube_logo = pygame.transform.scale(youtube_logo, (snake_size, snake_size))
 doubleclick_logo = pygame.transform.scale(doubleclick_logo, (snake_size, snake_size))
 admob_logo = pygame.transform.scale(admob_logo, (snake_size, snake_size))
 
 special_data_points_info = []
-with open('competitors.csv', newline='', encoding='utf-8') as csvfile:
-    reader = csv.DictReader(csvfile, delimiter=';')
+with open("competitors.csv", newline="", encoding="utf-8") as csvfile:
+    reader = csv.DictReader(csvfile, delimiter=";")
     for row in reader:
         special_data_points_info.append(row)
 
 slug_to_logo = {
-    'appliedsemantics': appliedsemantics_logo,
-    'youtube': youtube_logo,
-    'doubleclick': doubleclick_logo,
-    'admob': admob_logo
+    "appliedsemantics": appliedsemantics_logo,
+    "youtube": youtube_logo,
+    "doubleclick": doubleclick_logo,
+    "admob": admob_logo,
 }
 
 data_point_counter = 0
-special_data_points = [appliedsemantics_logo, youtube_logo, doubleclick_logo, admob_logo]
+special_data_points = [
+    appliedsemantics_logo,
+    youtube_logo,
+    doubleclick_logo,
+    admob_logo,
+]
 current_special_data_point = None
 current_special_data_point_slug = None
 
@@ -72,6 +95,7 @@ current_special_data_point_slug = None
 # -------------------------------------------------------------------------------------
 #                                   FUNCTIONS
 # -------------------------------------------------------------------------------------
+
 
 def draw_snake(window, snake_body):
     for pos in snake_body:
@@ -104,8 +128,12 @@ def draw_button_text(text, start_x, start_y, color):
 def game_over():
     global data_point_counter, running
     font = pygame.font.SysFont(None, 30)  # Adjust font size to fit the grid unit
-    messages = ["Game Over !", "You've stuffed",  "yourself with", f"{data_point_counter} data pts!"]
-
+    messages = [
+        "Game Over !",
+        "You've stuffed",
+        "yourself with",
+        f"{data_point_counter} data pts!",
+    ]
 
     # Set starting position for the message
     x_start = 2 * snake_size
@@ -116,7 +144,7 @@ def game_over():
         for letter in message:
             # Draw a white background rectangle
             pygame.draw.rect(window, white, [x_start, y_start, snake_size, snake_size])
-            
+
             # Render the letter in black
             letter_surface = font.render(letter, True, black)
             letter_x = x_start + (snake_size - letter_surface.get_width()) // 2
@@ -130,13 +158,13 @@ def game_over():
         y_start += snake_size
         x_start = 2 * snake_size
 
-    # # Calculate button width based on the text length
-    # play_button_width = len("Play") * snake_size
-    # quit_button_width = len("Quit") * snake_size
-
     # # Adjust button positions based on grid
-    play_again_button = pygame.Rect(4 * snake_size, 10 * snake_size, 3 * snake_size, snake_size)
-    quit_button = pygame.Rect(8 * snake_size, 10 * snake_size, 3 * snake_size, snake_size)
+    play_again_button = pygame.Rect(
+        4 * snake_size, 10 * snake_size, 3 * snake_size, snake_size
+    )
+    quit_button = pygame.Rect(
+        8 * snake_size, 10 * snake_size, 3 * snake_size, snake_size
+    )
 
     pygame.draw.rect(window, [0, 255, 0], play_again_button)  # Green play again button
     pygame.draw.rect(window, [255, 0, 0], quit_button)  # Red quit button
@@ -150,11 +178,13 @@ def game_over():
     waiting_for_input = True
     while waiting_for_input:
         for event in pygame.event.get():
-            if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1):
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 mouse_pos = event.pos
                 if play_again_button.collidepoint(mouse_pos):
                     waiting_for_input = False
-                    running = False  # Set running to False to exit the current game loop
+                    running = (
+                        False  # Set running to False to exit the current game loop
+                    )
                     restart_game()  # Restart the game
                 elif quit_button.collidepoint(mouse_pos):
                     pygame.quit()
@@ -162,7 +192,9 @@ def game_over():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_p:
                     waiting_for_input = False
-                    running = False  # Set running to False to exit the current game loop
+                    running = (
+                        False  # Set running to False to exit the current game loop
+                    )
                     restart_game()  # Restart the game
                 elif event.key == pygame.K_q:
                     pygame.quit()
@@ -171,6 +203,7 @@ def game_over():
                 pygame.quit()
                 sys.exit()
 
+
 # Make sure the restart_game function resets all necessary variables to start the game afresh
 def restart_game():
     global snake_pos, snake_body, direction, data_point_pos, running
@@ -178,20 +211,25 @@ def restart_game():
     snake_body = [[100, 60], [80, 60], [60, 60]]
     direction = "RIGHT"
     # Ensure data point is aligned with the grid
-    data_point_pos = [random.randrange(0, window_size[0] // snake_size) * snake_size,
-                      random.randrange(0, window_size[1] // snake_size) * snake_size]
+    data_point_pos = [
+        random.randrange(0, config.WINDOW_SIZE[0] // snake_size) * snake_size,
+        random.randrange(0, config.WINDOW_SIZE[1] // snake_size) * snake_size,
+    ]
     running = True
 
 
 def generate_data_point():
     while True:
-        new_position = [random.randrange(0, window_size[0] // snake_size) * snake_size,
-                        random.randrange(0, window_size[1] // snake_size) * snake_size]
+        new_position = [
+            random.randrange(0, config.WINDOW_SIZE[0] // snake_size) * snake_size,
+            random.randrange(0, config.WINDOW_SIZE[1] // snake_size) * snake_size,
+        ]
         if new_position not in snake_body:
             return new_position
 
 
 special_data_point_collided = False
+
 
 def check_collision_with_data_point():
     global snake_body, data_point_pos, data_point_counter, current_special_data_point, current_special_data_point_slug, special_data_point_collided
@@ -212,27 +250,34 @@ def check_collision_with_data_point():
 
 
 def display_special_data_point_text(slug):
-    
+
     # Get the name and text for the slug
-    name = next((row['name'] for row in special_data_points_info if row['slug'] == slug), "")
-    text = next((row['text'] for row in special_data_points_info if row['slug'] == slug), "")
+    name = next(
+        (row["name"] for row in special_data_points_info if row["slug"] == slug), ""
+    )
+    text = next(
+        (row["text"] for row in special_data_points_info if row["slug"] == slug), ""
+    )
 
     # Set up the square dimensions and position
-    square_size = list(map(lambda x: x*0.9, window_size)) # Width, Height
-    square_x = (window_size[0] - square_size[0]) // 2
-    square_y = (window_size[1] - square_size[1]) // 2
+    square_size = list(map(lambda x: x * 0.9, config.WINDOW_SIZE))  # Width, Height
+    square_x = (config.WINDOW_SIZE[0] - square_size[0]) // 2
+    square_y = (config.WINDOW_SIZE[1] - square_size[1]) // 2
 
     # Draw the square
-    pygame.draw.rect(window, black, [square_x, square_y, square_size[0], square_size[1]])
-    pygame.draw.rect(window, white, [square_x, square_y, square_size[0], square_size[1]], 2)  # Border
+    pygame.draw.rect(
+        window, black, [square_x, square_y, square_size[0], square_size[1]]
+    )
+    pygame.draw.rect(
+        window, white, [square_x, square_y, square_size[0], square_size[1]], 2
+    )  # Border
 
     # Set up text and logo
     font = pygame.font.SysFont(None, 22)
-    messages = [
-        "CONGRATS ::)", "YOU'VE JUST ACQUIRED :",  f"{name}"]
+    messages = ["CONGRATS ::)", "YOU'VE JUST ACQUIRED :", f"{name}"]
     for i, message in enumerate(messages):
         message_surface = font.render(message, True, white)
-        window.blit(message_surface, (square_x + 10, square_y + (i+1) * 30))
+        window.blit(message_surface, (square_x + 10, square_y + (i + 1) * 30))
 
     # Draw the logo
     logo = slug_to_logo[slug]
@@ -249,24 +294,27 @@ def draw_grid():
     line_color = (50, 50, 50)  # Gray color for the lines
     line_width = 3  # New width for the lines
 
-    for x in range(0, window_size[0], snake_size):  # Horizontal positions
-        pygame.draw.line(window, line_color, (x, 0), (x, window_size[1]), line_width)
-    for y in range(0, window_size[1], snake_size):  # Vertical positions
-        pygame.draw.line(window, line_color, (0, y), (window_size[0], y), line_width)
-
+    for x in range(0, config.WINDOW_SIZE[0], snake_size):  # Horizontal positions
+        pygame.draw.line(
+            window, line_color, (x, 0), (x, config.WINDOW_SIZE[1]), line_width
+        )
+    for y in range(0, config.WINDOW_SIZE[1], snake_size):  # Vertical positions
+        pygame.draw.line(
+            window, line_color, (0, y), (config.WINDOW_SIZE[0], y), line_width
+        )
 
     # Draw white dots at intersections
     dot_color = white  # White color for the dots
     dot_size = 2  # Size of the dots
-    for x in range(0, window_size[0], snake_size):  
-        for y in range(0, window_size[1], snake_size):
+    for x in range(0, config.WINDOW_SIZE[0], snake_size):
+        for y in range(0, config.WINDOW_SIZE[1], snake_size):
             pygame.draw.circle(window, dot_color, (x, y), dot_size)
 
 
 # -------------------------------------------------------------------------------------
 #                                   Game loop
 # -------------------------------------------------------------------------------------
-            
+
 running = True
 while running:
     for event in pygame.event.get():
@@ -307,8 +355,12 @@ while running:
         special_data_point_collided = False
 
     # Check collision with boundaries
-    if (snake_pos[0] >= window_size[0] or snake_pos[0] < 0 or
-        snake_pos[1] >= window_size[1] or snake_pos[1] < 0):
+    if (
+        snake_pos[0] >= config.WINDOW_SIZE[0]
+        or snake_pos[0] < 0
+        or snake_pos[1] >= config.WINDOW_SIZE[1]
+        or snake_pos[1] < 0
+    ):
         game_over()
         pygame.time.wait(1000)
         restart_game()

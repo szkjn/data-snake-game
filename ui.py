@@ -25,6 +25,15 @@ class Button:
 def draw_play_zone(window):
     pygame.draw.rect(window, cfg.WHITE, cfg.PLAY_ZONE_RECT, 1)
 
+def draw_score_counter(window, data_point_counter):
+    play_zone_padding = cfg.SNAKE_SIZE
+    draw_text(
+        window,
+        f"Score: {data_point_counter}",
+        (25, window.get_size()[1] - 4 * play_zone_padding),
+        cfg.FONT_SIZE_L,
+        cfg.WHITE,
+    )
 
 def draw_button(surface, text, position, size):
     font = pygame.font.Font(font_path, cfg.FONT_SIZE_L)
@@ -64,13 +73,7 @@ def display_play_page(
     )
     pygame.draw.rect(window, cfg.WHITE, play_zone_rect, 1)  # 1 is the border width
 
-    draw_text(
-        window,
-        f"Score: {data_point_counter}",
-        (25, window.get_size()[1] - 4 * play_zone_padding),
-        cfg.FONT_SIZE_L,
-        cfg.WHITE,
-    )
+    draw_score_counter(window, data_point_counter)
 
     pygame.display.update()
 
@@ -134,8 +137,9 @@ def display_game_over_page(window, data_point_counter):
     pygame.display.update()
 
 
-def display_special_page(window, slug, special_data_points_info):
+def display_special_page(window, slug, special_data_points_info, data_point_counter):
     window.fill(cfg.BLACK)
+    ascii_art_file_path = 'assets/ascii/evil.txt'
 
     name = next(
         (row["name"] for row in special_data_points_info if row["slug"] == slug), ""
@@ -144,28 +148,36 @@ def display_special_page(window, slug, special_data_points_info):
         (row["text"] for row in special_data_points_info if row["slug"] == slug), ""
     )
 
-    draw_text(window, "Congrats !", (25, 50), cfg.FONT_SIZE_XL, cfg.WHITE)
-    draw_text(
-        window, f"You've just acquired {name}", (25, 75), cfg.FONT_SIZE_XL, cfg.WHITE
+    draw_centered_text(window, "Congrats !", 50, cfg.FONT_SIZE_XL, cfg.WHITE)
+    draw_centered_text(
+        window, "You've just acquired:", 75, cfg.FONT_SIZE_XL, cfg.WHITE
     )
+    draw_centered_text(
+        window, name, 100, cfg.FONT_SIZE_XL, cfg.WHITE
+    )
+    draw_ascii_art(window, ascii_art_file_path, (30, 125), cfg.FONT_SIZE_M, cfg.WHITE)
+
     draw_multiline_text(
-        window, text, (25, 125), cfg.FONT_SIZE_L, cfg.WHITE, cfg.WINDOW_SIZE[0] - 50
+        window, text, (165, 150), cfg.FONT_SIZE_L, cfg.WHITE, cfg.WINDOW_SIZE[0] - 100
     )
 
     # Create and draw buttons
     play_button = Button(
         window,
         "(R)ESUME",
-        (cfg.CENTERED_BUTTON_X, 150),
+        (cfg.CENTERED_BUTTON_X, 260),
         (cfg.BUTTON_WIDTH, cfg.BUTTON_HEIGHT),
     )
     play_button.draw()
 
     draw_play_zone(window)
+    draw_score_counter(window, data_point_counter)
+
     pygame.display.update()
 
 
 def draw_multiline_text(surface, text, position, font_size, color, max_line_width):
+    text = f'"{text}"'
     font = pygame.font.Font(font_path, font_size)
     words = text.split(" ")
     space = font.size(" ")[0]  # Width of a space.
@@ -197,3 +209,14 @@ def draw_centered_text(surface, text, y_pos, font_size, color):
     text_rect.midtop = (surface.get_width() / 2, y_pos)
 
     surface.blit(text_surface, text_rect)
+
+
+def draw_ascii_art(window, art_file_path, top_left_position, font_size, color):
+    font = pygame.font.Font(font_path, font_size)
+    x, y = top_left_position
+
+    with open(art_file_path, 'r') as file:
+        for line in file:
+            line_surface = font.render(line, True, color)
+            window.blit(line_surface, (x, y))
+            y += line_surface.get_height()  # Move to the next line

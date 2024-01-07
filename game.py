@@ -77,6 +77,7 @@ class Game:
                     self.window,
                     self.current_special_data_point_slug,
                     self.special_data_points_info,
+                    self.data_point_counter,
                 )
             elif self.state == "GAME_OVER_STATE":
                 self.handle_game_over_page_events()

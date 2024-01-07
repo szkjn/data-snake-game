@@ -122,6 +122,14 @@ class Game:
         if self.current_special_data_point is not None:
             self.current_special_data_point.draw(self.window)
 
+        # Draw the play zone border
+        play_zone_padding = cfg.SNAKE_SIZE
+        play_zone_rect = pygame.Rect(play_zone_padding, play_zone_padding, 
+                                     self.window.get_size()[0] - 2 * play_zone_padding, 
+                                     self.window.get_size()[1] - 5 * play_zone_padding)
+        pygame.draw.rect(self.window, cfg.WHITE, play_zone_rect, 1)  # 1 is the border width
+
+
         pygame.display.update()
 
     def game_over(self):

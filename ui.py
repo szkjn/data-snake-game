@@ -2,6 +2,7 @@ import pygame
 
 import cfg
 
+font_path = 'assets/font/VT323/VT323-Regular.ttf'
 
 class Button:
     def __init__(self, surface, text, position, size):
@@ -19,17 +20,23 @@ class Button:
             event.pos
         )
 
+def draw_play_zone(window):
+    play_zone_rect = pygame.Rect(cfg.SNAKE_SIZE, cfg.SNAKE_SIZE, 
+                                 window.get_size()[0] - 2 * cfg.SNAKE_SIZE, 
+                                 window.get_size()[1] - 5 * cfg.SNAKE_SIZE)
+    pygame.draw.rect(window, cfg.WHITE, play_zone_rect, 1)
+
 
 def draw_button(surface, text, position, size):
-    font = pygame.font.Font(None, 36)
+    font = pygame.font.Font(font_path, cfg.FONT_SIZE_L)
     text_render = font.render(text, True, cfg.WHITE)
     rect = pygame.Rect(position, size)
-    pygame.draw.rect(surface, cfg.WHITE, rect, 2)
+    pygame.draw.rect(surface, cfg.WHITE, rect, 1)
     surface.blit(text_render, text_render.get_rect(center=rect.center))
 
 
 def draw_text(surface, text, position, font_size, color):
-    font = pygame.font.Font(None, font_size)
+    font = pygame.font.Font(font_path, font_size)
     text_render = font.render(text, True, color)
     surface.blit(text_render, position)
 
@@ -47,19 +54,20 @@ def display_welcome_page(window):
 
     play_button = Button(
         window,
-        "(P)lay",
-        (cfg.CENTERED_BUTTON_X, 150),
+        "(P)LAY",
+        (cfg.CENTERED_BUTTON_X, 200),
         (cfg.BUTTON_WIDTH, cfg.BUTTON_HEIGHT),
     )
     play_button.draw()
     quit_button = Button(
         window,
-        "(Q)uit",
+        "(Q)UIT",
         (cfg.CENTERED_BUTTON_X, 250),
         (cfg.BUTTON_WIDTH, cfg.BUTTON_HEIGHT),
     )
     quit_button.draw()
 
+    draw_play_zone(window)
     pygame.display.update()
 
 
@@ -76,7 +84,7 @@ def display_game_over_page(window, data_point_counter):
     play_button = Button(
         window,
         "(P)lay Again",
-        (cfg.CENTERED_BUTTON_X, 150),
+        (cfg.CENTERED_BUTTON_X, 200),
         (cfg.BUTTON_WIDTH, cfg.BUTTON_HEIGHT),
     )
     play_button.draw()
@@ -88,6 +96,7 @@ def display_game_over_page(window, data_point_counter):
     )
     quit_button.draw()
 
+    draw_play_zone(window)
     pygame.display.update()
 
 
@@ -108,10 +117,11 @@ def display_special_page(window, slug, special_data_points_info):
     # Create and draw buttons
     play_button = Button(
         window,
-        "(R)esume",
+        "(R)ESUME",
         (cfg.CENTERED_BUTTON_X, 150),
         (cfg.BUTTON_WIDTH, cfg.BUTTON_HEIGHT),
     )
     play_button.draw()
-
+    
+    draw_play_zone(window)
     pygame.display.update()

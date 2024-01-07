@@ -3,3 +3,5 @@ venv/
 
 # Test files
 test*
+
+__pycache__

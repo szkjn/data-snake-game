@@ -10,7 +10,7 @@ class Game:
     def __init__(self, window):
         self.window = window
         self.snake = Snake()
-        self.data_point = DataPoint()
+        self.data_point = DataPoint(self.snake.body)
         self.clock = pygame.time.Clock()
         self.running = True
 
@@ -121,8 +121,8 @@ class Game:
 
     def create_special_data_point(self, slug):
         """Create a special data point based on the slug."""
-        logo_path = self.slug_to_logo[slug]
-        self.current_special_data_point = SpecialDataPoint(logo_path)
+        special_logo = self.slug_to_logo[slug]
+        self.current_special_data_point = SpecialDataPoint(special_logo, self.snake.body)
 
     def check_collision_with_data_point(self):
         """Check if the snake has collided with a data point."""
@@ -160,7 +160,7 @@ class Game:
             self.data_point = None
         else:
             print("REGULAR COLLISION")
-            self.data_point.reset_position()  # Generate a new regular data point
+            self.data_point.reset_position(self.snake.body)  # Generate a new regular data point
 
     def handle_special_data_point_collision(self):
         """Handle the logic when the snake collides with a special data point."""
@@ -168,8 +168,8 @@ class Game:
         print(self.data_point_counter)
 
         # Recreate a new data point randomly
-        self.data_point = DataPoint()
-        self.data_point.reset_position()
+        self.data_point = DataPoint(self.snake.body)
+        # self.data_point.reset_position()
 
         # Remove the current special data point
         self.current_special_data_point = None

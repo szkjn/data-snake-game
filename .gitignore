@@ -4,4 +4,5 @@ venv/
 # Test files
 test*
 
+# Cache
 __pycache__/

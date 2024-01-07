@@ -4,4 +4,4 @@ venv/
 # Test files
 test*
 
-__pycache__
+__pycache__/

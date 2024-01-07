@@ -1,11 +1,11 @@
 import pygame
-import config
+import cfg
 
 
 class Snake:
     def __init__(self):
         # Initial settings
-        self.size = config.SNAKE_SIZE
+        self.size = cfg.SNAKE_SIZE
         self.position = [100, 60]  # Starting position
         self.body = [[100, 60], [80, 60], [60, 60]]  # Initial body segments
         self.direction = "RIGHT"

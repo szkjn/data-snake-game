@@ -3,13 +3,13 @@ import sys
 import random
 import csv
 
-import config
+import cfg
 from game import Game
 
 
 def main():
     pygame.init()
-    window = pygame.display.set_mode(config.WINDOW_SIZE)
+    window = pygame.display.set_mode(cfg.WINDOW_SIZE)
     pygame.display.set_caption("Data Snake Game")
     game = Game(window)
     game.run()
@@ -25,6 +25,7 @@ exit()
 # -------------------------------------------------------------------------------------
 #                                   FUNCTIONS
 # -------------------------------------------------------------------------------------
+
 
 def draw_button_text(text, start_x, start_y, color):
     for letter in text:
@@ -132,9 +133,9 @@ def display_special_data_point_text(slug):
     )
 
     # Set up the square dimensions and position
-    square_size = list(map(lambda x: x * 0.9, config.WINDOW_SIZE))  # Width, Height
-    square_x = (config.WINDOW_SIZE[0] - square_size[0]) // 2
-    square_y = (config.WINDOW_SIZE[1] - square_size[1]) // 2
+    square_size = list(map(lambda x: x * 0.9, cfg.WINDOW_SIZE))  # Width, Height
+    square_x = (cfg.WINDOW_SIZE[0] - square_size[0]) // 2
+    square_y = (cfg.WINDOW_SIZE[1] - square_size[1]) // 2
 
     # Draw the square
     pygame.draw.rect(
@@ -166,20 +167,20 @@ def draw_grid():
     line_color = (50, 50, 50)  # Gray color for the lines
     line_width = 3  # New width for the lines
 
-    for x in range(0, config.WINDOW_SIZE[0], snake_size):  # Horizontal positions
+    for x in range(0, cfg.WINDOW_SIZE[0], snake_size):  # Horizontal positions
         pygame.draw.line(
-            window, line_color, (x, 0), (x, config.WINDOW_SIZE[1]), line_width
+            window, line_color, (x, 0), (x, cfg.WINDOW_SIZE[1]), line_width
         )
-    for y in range(0, config.WINDOW_SIZE[1], snake_size):  # Vertical positions
+    for y in range(0, cfg.WINDOW_SIZE[1], snake_size):  # Vertical positions
         pygame.draw.line(
-            window, line_color, (0, y), (config.WINDOW_SIZE[0], y), line_width
+            window, line_color, (0, y), (cfg.WINDOW_SIZE[0], y), line_width
         )
 
     # Draw white dots at intersections
     dot_color = white  # White color for the dots
     dot_size = 2  # Size of the dots
-    for x in range(0, config.WINDOW_SIZE[0], snake_size):
-        for y in range(0, config.WINDOW_SIZE[1], snake_size):
+    for x in range(0, cfg.WINDOW_SIZE[0], snake_size):
+        for y in range(0, cfg.WINDOW_SIZE[1], snake_size):
             pygame.draw.circle(window, dot_color, (x, y), dot_size)
 
 
@@ -193,5 +194,3 @@ if special_data_point_collided:
     current_special_data_point = None
     current_special_data_point_slug = None
     special_data_point_collided = False
-
-

@@ -3,13 +3,13 @@ import sys
 import random
 import csv
 
-import config
+import cfg
 from game import Game
 
 
 def main():
     pygame.init()
-    window = pygame.display.set_mode(config.WINDOW_SIZE)
+    window = pygame.display.set_mode(cfg.WINDOW_SIZE)
     pygame.display.set_caption("Data Snake Game")
     game = Game(window)
     game.run()
@@ -25,7 +25,7 @@ exit()
 #                                   Initialize Pygame
 # -------------------------------------------------------------------------------------
 pygame.init()
-window = pygame.display.set_mode(config.WINDOW_SIZE)
+window = pygame.display.set_mode(cfg.WINDOW_SIZE)
 pygame.display.set_caption("Data Snake Game")
 
 # Colors
@@ -43,8 +43,8 @@ direction = "RIGHT"
 
 # Data point settings
 data_point_pos = [
-    random.randrange(1, (config.WINDOW_SIZE[0] // snake_size)) * snake_size,
-    random.randrange(1, (config.WINDOW_SIZE[1] // snake_size)) * snake_size,
+    random.randrange(1, (cfg.WINDOW_SIZE[0] // snake_size)) * snake_size,
+    random.randrange(1, (cfg.WINDOW_SIZE[1] // snake_size)) * snake_size,
 ]
 
 clock = pygame.time.Clock()
@@ -212,8 +212,8 @@ def restart_game():
     direction = "RIGHT"
     # Ensure data point is aligned with the grid
     data_point_pos = [
-        random.randrange(0, config.WINDOW_SIZE[0] // snake_size) * snake_size,
-        random.randrange(0, config.WINDOW_SIZE[1] // snake_size) * snake_size,
+        random.randrange(0, cfg.WINDOW_SIZE[0] // snake_size) * snake_size,
+        random.randrange(0, cfg.WINDOW_SIZE[1] // snake_size) * snake_size,
     ]
     running = True
 
@@ -221,8 +221,8 @@ def restart_game():
 def generate_data_point():
     while True:
         new_position = [
-            random.randrange(0, config.WINDOW_SIZE[0] // snake_size) * snake_size,
-            random.randrange(0, config.WINDOW_SIZE[1] // snake_size) * snake_size,
+            random.randrange(0, cfg.WINDOW_SIZE[0] // snake_size) * snake_size,
+            random.randrange(0, cfg.WINDOW_SIZE[1] // snake_size) * snake_size,
         ]
         if new_position not in snake_body:
             return new_position
@@ -260,9 +260,9 @@ def display_special_data_point_text(slug):
     )
 
     # Set up the square dimensions and position
-    square_size = list(map(lambda x: x * 0.9, config.WINDOW_SIZE))  # Width, Height
-    square_x = (config.WINDOW_SIZE[0] - square_size[0]) // 2
-    square_y = (config.WINDOW_SIZE[1] - square_size[1]) // 2
+    square_size = list(map(lambda x: x * 0.9, cfg.WINDOW_SIZE))  # Width, Height
+    square_x = (cfg.WINDOW_SIZE[0] - square_size[0]) // 2
+    square_y = (cfg.WINDOW_SIZE[1] - square_size[1]) // 2
 
     # Draw the square
     pygame.draw.rect(
@@ -294,20 +294,20 @@ def draw_grid():
     line_color = (50, 50, 50)  # Gray color for the lines
     line_width = 3  # New width for the lines
 
-    for x in range(0, config.WINDOW_SIZE[0], snake_size):  # Horizontal positions
+    for x in range(0, cfg.WINDOW_SIZE[0], snake_size):  # Horizontal positions
         pygame.draw.line(
-            window, line_color, (x, 0), (x, config.WINDOW_SIZE[1]), line_width
+            window, line_color, (x, 0), (x, cfg.WINDOW_SIZE[1]), line_width
         )
-    for y in range(0, config.WINDOW_SIZE[1], snake_size):  # Vertical positions
+    for y in range(0, cfg.WINDOW_SIZE[1], snake_size):  # Vertical positions
         pygame.draw.line(
-            window, line_color, (0, y), (config.WINDOW_SIZE[0], y), line_width
+            window, line_color, (0, y), (cfg.WINDOW_SIZE[0], y), line_width
         )
 
     # Draw white dots at intersections
     dot_color = white  # White color for the dots
     dot_size = 2  # Size of the dots
-    for x in range(0, config.WINDOW_SIZE[0], snake_size):
-        for y in range(0, config.WINDOW_SIZE[1], snake_size):
+    for x in range(0, cfg.WINDOW_SIZE[0], snake_size):
+        for y in range(0, cfg.WINDOW_SIZE[1], snake_size):
             pygame.draw.circle(window, dot_color, (x, y), dot_size)
 
 
@@ -356,9 +356,9 @@ while running:
 
     # Check collision with boundaries
     if (
-        snake_pos[0] >= config.WINDOW_SIZE[0]
+        snake_pos[0] >= cfg.WINDOW_SIZE[0]
         or snake_pos[0] < 0
-        or snake_pos[1] >= config.WINDOW_SIZE[1]
+        or snake_pos[1] >= cfg.WINDOW_SIZE[1]
         or snake_pos[1] < 0
     ):
         game_over()

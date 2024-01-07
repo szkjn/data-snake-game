@@ -1,4 +1,5 @@
 # Configuration settings for the game
+import pygame
 
 # Window settings
 WINDOW_SIZE = (500, 400)
@@ -22,3 +23,15 @@ CENTERED_BUTTON_X = (WINDOW_SIZE[0] / 2) - (BUTTON_WIDTH / 2)
 # Text settings
 FONT_SIZE_XL = 30
 FONT_SIZE_L = 21
+
+# Play zone
+PLAY_ZONE_PADDING = SNAKE_SIZE
+
+TEST = [[SNAKE_SIZE, SNAKE_SIZE]]
+
+PLAY_ZONE_RECT = pygame.Rect(
+    SNAKE_SIZE,
+    SNAKE_SIZE, 
+    WINDOW_SIZE[0] - 2 * PLAY_ZONE_PADDING, 
+    WINDOW_SIZE[1] - 5 * PLAY_ZONE_PADDING
+)

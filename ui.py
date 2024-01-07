@@ -21,10 +21,7 @@ class Button:
         )
 
 def draw_play_zone(window):
-    play_zone_rect = pygame.Rect(cfg.SNAKE_SIZE, cfg.SNAKE_SIZE, 
-                                 window.get_size()[0] - 2 * cfg.SNAKE_SIZE, 
-                                 window.get_size()[1] - 5 * cfg.SNAKE_SIZE)
-    pygame.draw.rect(window, cfg.WHITE, play_zone_rect, 1)
+    pygame.draw.rect(window, cfg.WHITE, cfg.PLAY_ZONE_RECT, 1)
 
 
 def draw_button(surface, text, position, size):

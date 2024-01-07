@@ -204,39 +204,26 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if self.play_button_rect.collidepoint(event.pos):
-                    self.state = "PLAY_STATE"  # Change to play state
-                elif self.quit_button_rect.collidepoint(event.pos):
-                    self.running = False  # Exit the game
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_p:
-                    self.state = "PLAY_STATE"  # Change to play state
+                    self.state = "PLAY_STATE"
                 elif event.key == pygame.K_q:
-                    self.running = False  # Exit the game
+                    self.running = False
 
     def handle_game_over_page_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if self.play_button_rect.collidepoint(event.pos):
-                    self.state = "PLAY_STATE"  # Change to play state
-                elif self.quit_button_rect.collidepoint(event.pos):
-                    self.running = False  # Exit the game
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_p:
-                    self.state = "PLAY_STATE"  # Change to play state
+                    self.state = "PLAY_STATE"
                 elif event.key == pygame.K_q:
-                    self.running = False  # Exit the game
+                    self.running = False
 
     def handle_special_page_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if self.play_button_rect.collidepoint(event.pos):
-                    self.state = "PLAY_STATE"  # Change to play state
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r:
-                    self.state = "PLAY_STATE"  # Change to play state
+                    self.state = "PLAY_STATE"

@@ -56,14 +56,14 @@ class Snake:
 
     def check_collision_with_boundaries(self, window_size):
         """Check if the snake has collided with the window boundaries."""
-        right_boundary = window_size[0] - cfg.SNAKE_SIZE
-        bottom_boundary = window_size[1] - 4*cfg.SNAKE_SIZE
+        right_boundary = window_size[0] - cfg.PLAY_ZONE_PADDING
+        bottom_boundary = window_size[1] - 4 * cfg.PLAY_ZONE_PADDING
 
         if (
             self.position[0] >= right_boundary
-            or self.position[0] < cfg.SNAKE_SIZE
+            or self.position[0] < cfg.PLAY_ZONE_PADDING
             or self.position[1] >= bottom_boundary
-            or self.position[1] < cfg.SNAKE_SIZE
+            or self.position[1] < cfg.PLAY_ZONE_PADDING
         ):
             return True
         return False

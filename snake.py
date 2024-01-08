@@ -18,7 +18,7 @@ class Snake:
         self.position = [100, 60]  # Starting position
         self.body = [[100, 60], [80, 60], [60, 60]]  # Initial body segments
         self.direction = "RIGHT"
-        self.head_img = pygame.image.load("assets/sm/google.png")
+        self.head_img = pygame.image.load("assets/30x30/googlevil.png")
         self.head_img = pygame.transform.scale(self.head_img, (self.size, self.size))
 
     def update_direction(self, new_direction):

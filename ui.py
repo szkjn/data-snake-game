@@ -123,20 +123,50 @@ def display_welcome_page(window):
         cfg.WHITE,
     )
 
-    play_button = Button(
-        window,
-        "(P)LAY",
-        (cfg.CENTERED_BUTTON_X, 200),
-        (cfg.BUTTON_WIDTH, cfg.BUTTON_HEIGHT),
-    )
-    play_button.draw()
-    quit_button = Button(
-        window,
-        "(Q)UIT",
-        (cfg.CENTERED_BUTTON_X, 250),
-        (cfg.BUTTON_WIDTH, cfg.BUTTON_HEIGHT),
-    )
-    quit_button.draw()
+    # play_button = Button(
+    #     window,
+    #     "(P)LAY",
+    #     (cfg.CENTERED_BUTTON_X, 200),
+    #     (cfg.BUTTON_WIDTH, cfg.BUTTON_HEIGHT),
+    # )
+    # play_button.draw()
+    # quit_button = Button(
+    #     window,
+    #     "(Q)UIT",
+    #     (cfg.CENTERED_BUTTON_X, 250),
+    #     (cfg.BUTTON_WIDTH, cfg.BUTTON_HEIGHT),
+    # )
+    # quit_button.draw()
+
+    logo_list = [
+        "assets/30x30/appsem_w.png",
+        "assets/30x30/keyhole.png",
+        "assets/30x30/android.png",
+        "assets/30x30/youtube.png",
+        "assets/30x30/doubleclick.png",
+        "assets/30x30/admob.png",
+        "assets/30x30/ita_w.png",
+        "assets/30x30/motorola_w.png",
+        "assets/30x30/waze.png",
+        "assets/30x30/nest.png",
+        "assets/30x30/deepmind.png",
+        "assets/30x30/firebase.png",
+        "assets/30x30/looker.png",
+    ]
+
+    # for idx, el in enumerate(logo_list):
+    #     pixel_sm = create_pixelated_logo(el, cfg.WHITE, pixel_size=1)
+    #     window.blit(pixel_sm, (idx * 30 + 25, 200))
+
+    logo = "googlevil"
+
+    for i, el in enumerate(["30x30", "120x120", "md"]):
+        logo_path = f"assets/{el}/{logo}.png"
+        pixel_sm = create_pixelated_logo(logo_path, cfg.WHITE, pixel_size=1)
+        window.blit(pixel_sm, (40, 40*(i+1)))
+
+        pixel_lg = create_pixelated_logo(logo_path, cfg.WHITE, pixel_size=1, target_size=(120, 120))
+        window.blit(pixel_lg, (140*(i+1)-100, 170))
 
     draw_play_zone(window)
     pygame.display.update()
@@ -269,3 +299,38 @@ def draw_ascii_art(window, art_file_path, top_left_position, font_size, color):
             line_surface = font.render(line, True, color)
             window.blit(line_surface, (x, y))
             y += line_surface.get_height()  # Move to the next line
+
+
+def create_pixelated_logo(image_path, color, pixel_size=1, target_size=(cfg.SNAKE_SIZE, cfg.SNAKE_SIZE)):
+    """
+    Convert a PNG logo to a pixelated monochrome logo using pygame.Rect.
+
+    :param image_path: Path to the original image.
+    :param color: Color for the pixelated image (tuple: (R, G, B)).
+    :param pixel_size: Size of each 'pixel' in the pixelated image.
+    :return: Surface with the pixelated image.
+    """
+    # Load the image
+    try:
+        image = pygame.image.load(image_path)
+    except pygame.error as e:
+        print(f"Unable to load image: {e}")
+        return None
+
+    # Scale the image to the target size
+    scaled_image = pygame.transform.scale(image, target_size)
+
+    # Create a surface to draw the pixelated image
+    pixelated_surface = pygame.Surface(target_size)
+
+    # Loop through each pixel in the scaled image
+    for x in range(target_size[0]):
+        for y in range(target_size[1]):
+            # Get the color of the pixel
+            pixel_color = scaled_image.get_at((x, y))
+
+            # Check if the pixel is not fully transparent
+            if pixel_color.a != 0:
+                pygame.draw.rect(pixelated_surface, color, (x * pixel_size, y * pixel_size, pixel_size, pixel_size))
+
+    return pixelated_surface

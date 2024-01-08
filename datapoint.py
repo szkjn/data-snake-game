@@ -16,7 +16,7 @@ class DataPoint:
     def __init__(self, snake_body):
         self.position = self.generate_random_position(snake_body)
         self.image = pygame.transform.scale(
-            pygame.image.load("assets/sm/user_white.png"),
+            pygame.image.load("assets/30x30/user_w.png"),
             (cfg.SNAKE_SIZE, cfg.SNAKE_SIZE),
         )
 

@@ -48,19 +48,19 @@ class Game:
     def load_slug_to_logo(self):
         """Load slug to logo mapping."""
         slug_to_logo = {
-            "appliedsemantics": pygame.image.load("assets/sm/appliedsemantics.png"),
-            "keyhole": pygame.image.load("assets/sm/keyhole.png"),
-            "android": pygame.image.load("assets/sm/android.png"),
-            "youtube": pygame.image.load("assets/sm/youtube.png"),
-            "doubleclick": pygame.image.load("assets/sm/doubleclick.png"),
-            "admob": pygame.image.load("assets/sm/admob.png"),
-            "ita": pygame.image.load("assets/sm/ita.png"),
-            "motorola": pygame.image.load("assets/sm/motorola_w.png"),
-            "waze": pygame.image.load("assets/sm/waze.png"),
-            "nest": pygame.image.load("assets/sm/nest.png"),
-            "deepmind": pygame.image.load("assets/sm/deepmind.png"),
-            "firebase": pygame.image.load("assets/sm/firebase.png"),
-            "looker": pygame.image.load("assets/sm/looker.png"),
+            "appliedsemantics": pygame.image.load("assets/30x30/appsem_w.png"),
+            "keyhole": pygame.image.load("assets/30x30/keyhole.png"),
+            "android": pygame.image.load("assets/30x30/android.png"),
+            "youtube": pygame.image.load("assets/30x30/youtube.png"),
+            "doubleclick": pygame.image.load("assets/30x30/doubleclick.png"),
+            "admob": pygame.image.load("assets/30x30/admob.png"),
+            "ita": pygame.image.load("assets/30x30/ita_w.png"),
+            "motorola": pygame.image.load("assets/30x30/motorola_w.png"),
+            "waze": pygame.image.load("assets/30x30/waze.png"),
+            "nest": pygame.image.load("assets/30x30/nest.png"),
+            "deepmind": pygame.image.load("assets/30x30/deepmind.png"),
+            "firebase": pygame.image.load("assets/30x30/firebase.png"),
+            "looker": pygame.image.load("assets/30x30/looker.png"),
         }
         # Scale logos to fit the snake size
         for slug, logo in slug_to_logo.items():

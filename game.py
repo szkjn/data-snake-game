@@ -48,7 +48,7 @@ class Game:
     def load_slug_to_logo(self):
         """Load slug to logo mapping."""
         slug_to_logo = {
-            "appliedsemantics": pygame.image.load("assets/30x30/appsem_w.png"),
+            "appsem": pygame.image.load("assets/30x30/appsem_w.png"),
             "keyhole": pygame.image.load("assets/30x30/keyhole.png"),
             "android": pygame.image.load("assets/30x30/android.png"),
             "youtube": pygame.image.load("assets/30x30/youtube.png"),

@@ -117,56 +117,42 @@ def display_welcome_page(window):
 
     draw_centered_text(
         window,
-        "Welcome to the Game!",
+        "Welcome to Google's Snakeopoly!",
+        50,
+        cfg.FONT_SIZE_XL,
+        cfg.WHITE,
+    )
+
+    draw_centered_text(
+        window,
+        "Slither your way",
         100,
         cfg.FONT_SIZE_XL,
         cfg.WHITE,
     )
 
-    # play_button = Button(
-    #     window,
-    #     "(P)LAY",
-    #     (cfg.CENTERED_BUTTON_X, 200),
-    #     (cfg.BUTTON_WIDTH, cfg.BUTTON_HEIGHT),
-    # )
-    # play_button.draw()
-    # quit_button = Button(
-    #     window,
-    #     "(Q)UIT",
-    #     (cfg.CENTERED_BUTTON_X, 250),
-    #     (cfg.BUTTON_WIDTH, cfg.BUTTON_HEIGHT),
-    # )
-    # quit_button.draw()
+    draw_centered_text(
+        window,
+        "to Surveillance Sovereignty!",
+        125,
+        cfg.FONT_SIZE_XL,
+        cfg.WHITE,
+    )
 
-    logo_list = [
-        "assets/30x30/appsem_w.png",
-        "assets/30x30/keyhole.png",
-        "assets/30x30/android.png",
-        "assets/30x30/youtube.png",
-        "assets/30x30/doubleclick.png",
-        "assets/30x30/admob.png",
-        "assets/30x30/ita_w.png",
-        "assets/30x30/motorola_w.png",
-        "assets/30x30/waze.png",
-        "assets/30x30/nest.png",
-        "assets/30x30/deepmind.png",
-        "assets/30x30/firebase.png",
-        "assets/30x30/looker.png",
-    ]
-
-    # for idx, el in enumerate(logo_list):
-    #     pixel_sm = create_pixelated_logo(el, cfg.WHITE, pixel_size=1)
-    #     window.blit(pixel_sm, (idx * 30 + 25, 200))
-
-    logo = "googlevil"
-
-    for i, el in enumerate(["30x30", "120x120", "md"]):
-        logo_path = f"assets/{el}/{logo}.png"
-        pixel_sm = create_pixelated_logo(logo_path, cfg.WHITE, pixel_size=1)
-        window.blit(pixel_sm, (40, 40*(i+1)))
-
-        pixel_lg = create_pixelated_logo(logo_path, cfg.WHITE, pixel_size=1, target_size=(120, 120))
-        window.blit(pixel_lg, (140*(i+1)-100, 170))
+    play_button = Button(
+        window,
+        "(P)LAY",
+        (cfg.CENTERED_BUTTON_X, 200),
+        (cfg.BUTTON_WIDTH, cfg.BUTTON_HEIGHT),
+    )
+    play_button.draw()
+    quit_button = Button(
+        window,
+        "(Q)UIT",
+        (cfg.CENTERED_BUTTON_X, 250),
+        (cfg.BUTTON_WIDTH, cfg.BUTTON_HEIGHT),
+    )
+    quit_button.draw()
 
     draw_play_zone(window)
     pygame.display.update()
@@ -214,23 +200,26 @@ def display_special_page(
         (row["text"] for row in special_data_points_info if row["slug"] == slug), ""
     )
 
-    draw_centered_text(window, "Congrats !", 50, cfg.FONT_SIZE_XL, cfg.WHITE)
-    draw_centered_text(window, "You've just acquired:", 75, cfg.FONT_SIZE_XL, cfg.WHITE)
-    draw_centered_text(window, name, 100, cfg.FONT_SIZE_XL, cfg.WHITE)
+    draw_centered_text(window, "Congrats! You've just acquired:", 50, cfg.FONT_SIZE_XL, cfg.WHITE)
+    draw_centered_text(window, name, 90, cfg.FONT_SIZE_XL, cfg.WHITE)
     draw_ascii_art(window, ascii_art_file_path, (30, 125), cfg.FONT_SIZE_M, cfg.WHITE)
 
+    logo_path = f"assets/120x120/{slug}.png"
+    draw_centered_logo(window, logo_path, 130, cfg.WHITE, pixel_size=1, target_size=(80,80))
+
     draw_multiline_text(
-        window, text, (170, 150), cfg.FONT_SIZE_L, cfg.WHITE, cfg.WINDOW_SIZE[0] - 100
+        window, text, (170, 210), cfg.FONT_SIZE_L, cfg.WHITE, cfg.WINDOW_SIZE[0] - 100
     )
 
-    # Create and draw buttons
-    play_button = Button(
-        window,
-        "(R)ESUME",
-        (cfg.CENTERED_BUTTON_X, 260),
-        (cfg.BUTTON_WIDTH, cfg.BUTTON_HEIGHT),
-    )
-    play_button.draw()
+    # # Create and draw buttons
+    # play_button = Button(
+    #     window,
+    #     "(R)ESUME",
+    #     (cfg.CENTERED_BUTTON_X, 260),
+    #     (cfg.BUTTON_WIDTH, cfg.BUTTON_HEIGHT),
+    # )
+    # play_button.draw()
+    draw_centered_text(window, "(PRESS ANY KEY TO RESUME GAME)", window.get_size()[1] - 2 * cfg.SNAKE_SIZE, cfg.FONT_SIZE_L, cfg.WHITE)
 
     draw_play_zone(window)
     draw_score_counter(window, data_point_counter)
@@ -299,6 +288,30 @@ def draw_ascii_art(window, art_file_path, top_left_position, font_size, color):
             line_surface = font.render(line, True, color)
             window.blit(line_surface, (x, y))
             y += line_surface.get_height()  # Move to the next line
+
+
+def draw_centered_logo(surface, image_path, y_pos, color, pixel_size=1, target_size=(cfg.SNAKE_SIZE, cfg.SNAKE_SIZE)):
+    """
+    Draw a centered, pixelated, monochrome logo on the surface.
+
+    :param surface: Pygame surface to draw on.
+    :param image_path: Path to the original logo image.
+    :param y_pos: Vertical position for the top of the logo.
+    :param color: Color for the pixelated image (tuple: (R, G, B)).
+    :param pixel_size: Size of each 'pixel' in the pixelated image.
+    :param target_size: Size to which the original image will be scaled (width, height).
+    """
+    # Create the pixelated logo
+    pixelated_logo = create_pixelated_logo(image_path, color, pixel_size, target_size)
+
+    if pixelated_logo:
+        # Get the rect of the pixelated logo and position it
+        logo_rect = pixelated_logo.get_rect()
+        logo_rect.midtop = (surface.get_width() // 2, y_pos)
+        
+        # Draw the logo on the surface
+        surface.blit(pixelated_logo, logo_rect)
+
 
 
 def create_pixelated_logo(image_path, color, pixel_size=1, target_size=(cfg.SNAKE_SIZE, cfg.SNAKE_SIZE)):

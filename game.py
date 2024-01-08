@@ -1,6 +1,14 @@
+# Game Class
+
+# ------------------------------------------
+# Libraries imports
+# ------------------------------------------
 import pygame
 import csv
 
+# ------------------------------------------
+# Modules imports
+# ------------------------------------------
 import cfg
 import ui
 from snake import Snake
@@ -20,7 +28,7 @@ class Game:
         self.blink_timer = 0
         self.snake_visible = True
 
-        self.level = "Search Supremacist"
+        self.level = "Search Giant"
         self.final_score = 0
 
         self.data_point_counter = 0
@@ -33,27 +41,26 @@ class Game:
         self.quit_button_rect = pygame.Rect(100, 250, 200, 50)
 
         self.special_data_points_info = self.load_special_data_points()
-        self.special_data_points_queue = [row["slug"] for row in self.special_data_points_info]
-
+        self.special_data_points_queue = [
+            row["slug"] for row in self.special_data_points_info
+        ]
 
     def load_slug_to_logo(self):
         """Load slug to logo mapping."""
         slug_to_logo = {
-            "appliedsemantics": pygame.image.load(
-                "assets/thumbnail/appliedsemantics.png"
-            ),
-            "keyhole": pygame.image.load("assets/thumbnail/google.png"),
-            "android": pygame.image.load("assets/thumbnail/google.png"),
-            "youtube": pygame.image.load("assets/thumbnail/youtube.png"),
-            "doubleclick": pygame.image.load("assets/thumbnail/doubleclick.png"),
-            "admob": pygame.image.load("assets/thumbnail/admob.png"),
-            "ita": pygame.image.load("assets/thumbnail/google.png"),
-            "motorola": pygame.image.load("assets/thumbnail/google.png"),
-            "waze": pygame.image.load("assets/thumbnail/google.png"),
-            "nest": pygame.image.load("assets/thumbnail/google.png"),
-            "deepmind": pygame.image.load("assets/thumbnail/google.png"),
-            "firebase": pygame.image.load("assets/thumbnail/google.png"),
-            "looker": pygame.image.load("assets/thumbnail/google.png"),
+            "appliedsemantics": pygame.image.load("assets/sm/appliedsemantics.png"),
+            "keyhole": pygame.image.load("assets/sm/keyhole.png"),
+            "android": pygame.image.load("assets/sm/android.png"),
+            "youtube": pygame.image.load("assets/sm/youtube.png"),
+            "doubleclick": pygame.image.load("assets/sm/doubleclick.png"),
+            "admob": pygame.image.load("assets/sm/admob.png"),
+            "ita": pygame.image.load("assets/sm/ita.png"),
+            "motorola": pygame.image.load("assets/sm/motorola_w.png"),
+            "waze": pygame.image.load("assets/sm/waze.png"),
+            "nest": pygame.image.load("assets/sm/nest.png"),
+            "deepmind": pygame.image.load("assets/sm/deepmind.png"),
+            "firebase": pygame.image.load("assets/sm/firebase.png"),
+            "looker": pygame.image.load("assets/sm/looker.png"),
         }
         # Scale logos to fit the snake size
         for slug, logo in slug_to_logo.items():
@@ -94,7 +101,7 @@ class Game:
                         self.level,
                         self.current_special_data_point,
                         self.data_point_counter,
-                        self.snake_visible
+                        self.snake_visible,
                     )
 
                     if self.freeze_timer <= 0:
@@ -113,7 +120,7 @@ class Game:
                         self.level,
                         self.current_special_data_point,
                         self.data_point_counter,
-                        self.snake_visible
+                        self.snake_visible,
                     )
 
             elif self.state == "SPECIAL_STATE":
@@ -175,14 +182,18 @@ class Game:
         self.current_special_data_point = None
         self.current_special_data_point_slug = None
         self.special_data_point_collided = False
-        self.special_data_points_queue = [row["slug"] for row in self.special_data_points_info]
+        self.special_data_points_queue = [
+            row["slug"] for row in self.special_data_points_info
+        ]
 
     def create_special_data_point(self, slug):
         """Create a special data point based on the slug."""
         if self.special_data_points_queue:
             next_slug = self.special_data_points_queue.pop(0)  # Get the next slug
             special_logo = self.slug_to_logo[next_slug]
-            self.current_special_data_point = SpecialDataPoint(special_logo, self.snake.body)
+            self.current_special_data_point = SpecialDataPoint(
+                special_logo, self.snake.body
+            )
             self.current_special_data_point_slug = next_slug
 
     def check_collision_with_data_point(self):
@@ -228,7 +239,11 @@ class Game:
 
         # Update level based on the current special data point
         self.level = next(
-            (row["level"] for row in self.special_data_points_info if row["slug"] == self.current_special_data_point_slug),
+            (
+                row["level"]
+                for row in self.special_data_points_info
+                if row["slug"] == self.current_special_data_point_slug
+            ),
         )
 
         # Recreate a new data point randomly
@@ -271,9 +286,11 @@ class Game:
         # Each full blink includes two phases: invisible and visible
         if self.blink_count < 6:  # 3 full blinks (6 phases in total)
             self.blink_timer += dt
-            if self.blink_timer >= cfg.FREEZE_TIMER/6:
+            if self.blink_timer >= cfg.FREEZE_TIMER / 6:
                 self.snake_visible = not self.snake_visible
-                self.blink_timer -= cfg.FREEZE_TIMER/6  # Reset timer for the next phase
+                self.blink_timer -= (
+                    cfg.FREEZE_TIMER / 6
+                )  # Reset timer for the next phase
                 self.blink_count += 1
 
     def reset_blinking(self):

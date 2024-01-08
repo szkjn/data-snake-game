@@ -1,6 +1,15 @@
+# Button Class and UI-related functions
+
+# ------------------------------------------
+# Libraries imports
+# ------------------------------------------
 import pygame
 
+# ------------------------------------------
+# Modules imports
+# ------------------------------------------
 import cfg
+
 
 font_path = "assets/font/VT323/VT323-Regular.ttf"
 
@@ -25,6 +34,7 @@ class Button:
 def draw_play_zone(window):
     pygame.draw.rect(window, cfg.WHITE, cfg.PLAY_ZONE_RECT, 1)
 
+
 def draw_score_counter(window, data_point_counter):
     play_zone_padding = cfg.SNAKE_SIZE
     draw_aligned_text(
@@ -34,8 +44,9 @@ def draw_score_counter(window, data_point_counter):
         cfg.FONT_SIZE_L,
         cfg.WHITE,
         "left",
-        play_zone_padding
+        play_zone_padding,
     )
+
 
 def draw_level(window, level):
     play_zone_padding = cfg.SNAKE_SIZE
@@ -47,7 +58,7 @@ def draw_level(window, level):
         cfg.FONT_SIZE_L,
         cfg.WHITE,
         "right",
-        play_zone_padding
+        play_zone_padding,
     )
 
 
@@ -66,7 +77,13 @@ def draw_text(surface, text, position, font_size, color):
 
 
 def display_play_page(
-    window, snake, data_point, level, current_special_data_point, data_point_counter, snake_visible
+    window,
+    snake,
+    data_point,
+    level,
+    current_special_data_point,
+    data_point_counter,
+    snake_visible,
 ):
     window.fill(cfg.BLACK)
     if snake_visible:
@@ -154,9 +171,11 @@ def display_game_over_page(window, final_score):
     pygame.display.update()
 
 
-def display_special_page(window, level, slug, special_data_points_info, data_point_counter):
+def display_special_page(
+    window, level, slug, special_data_points_info, data_point_counter
+):
     window.fill(cfg.BLACK)
-    ascii_art_file_path = 'assets/ascii/evil.txt'
+    ascii_art_file_path = "assets/ascii/evil.txt"
 
     name = next(
         (row["name"] for row in special_data_points_info if row["slug"] == slug), ""
@@ -166,12 +185,8 @@ def display_special_page(window, level, slug, special_data_points_info, data_poi
     )
 
     draw_centered_text(window, "Congrats !", 50, cfg.FONT_SIZE_XL, cfg.WHITE)
-    draw_centered_text(
-        window, "You've just acquired:", 75, cfg.FONT_SIZE_XL, cfg.WHITE
-    )
-    draw_centered_text(
-        window, name, 100, cfg.FONT_SIZE_XL, cfg.WHITE
-    )
+    draw_centered_text(window, "You've just acquired:", 75, cfg.FONT_SIZE_XL, cfg.WHITE)
+    draw_centered_text(window, name, 100, cfg.FONT_SIZE_XL, cfg.WHITE)
     draw_ascii_art(window, ascii_art_file_path, (30, 125), cfg.FONT_SIZE_M, cfg.WHITE)
 
     draw_multiline_text(
@@ -234,9 +249,9 @@ def draw_aligned_text(surface, text, y_pos, font_size, color, alignment, padding
     text_surface = font.render(text, True, color)
     text_rect = text_surface.get_rect()
 
-    if alignment == 'left':
+    if alignment == "left":
         text_rect.topleft = (padding, y_pos)
-    elif alignment == 'right':
+    elif alignment == "right":
         x_pos = surface.get_width() - text_rect.width - padding
         text_rect.topleft = (x_pos, y_pos)
     else:
@@ -249,7 +264,7 @@ def draw_ascii_art(window, art_file_path, top_left_position, font_size, color):
     font = pygame.font.Font(font_path, font_size)
     x, y = top_left_position
 
-    with open(art_file_path, 'r') as file:
+    with open(art_file_path, "r") as file:
         for line in file:
             line_surface = font.render(line, True, color)
             window.blit(line_surface, (x, y))

@@ -27,23 +27,27 @@ def draw_play_zone(window):
 
 def draw_score_counter(window, data_point_counter):
     play_zone_padding = cfg.SNAKE_SIZE
-    draw_text(
+    draw_aligned_text(
         window,
         f"Score: {data_point_counter}",
-        (25, window.get_size()[1] - 4 * play_zone_padding),
+        window.get_size()[1] - 4 * play_zone_padding,
         cfg.FONT_SIZE_L,
         cfg.WHITE,
+        "left",
+        play_zone_padding
     )
 
 def draw_level(window, level):
     play_zone_padding = cfg.SNAKE_SIZE
 
-    draw_text(
+    draw_aligned_text(
         window,
         f"Level: {level}",
-        (150, window.get_size()[1] - 4 * play_zone_padding),
+        window.get_size()[1] - 4 * play_zone_padding,
         cfg.FONT_SIZE_L,
         cfg.WHITE,
+        "right",
+        play_zone_padding
     )
 
 
@@ -170,7 +174,7 @@ def display_special_page(window, level, slug, special_data_points_info, data_poi
     draw_ascii_art(window, ascii_art_file_path, (30, 125), cfg.FONT_SIZE_M, cfg.WHITE)
 
     draw_multiline_text(
-        window, text, (165, 150), cfg.FONT_SIZE_L, cfg.WHITE, cfg.WINDOW_SIZE[0] - 100
+        window, text, (170, 150), cfg.FONT_SIZE_L, cfg.WHITE, cfg.WINDOW_SIZE[0] - 100
     )
 
     # Create and draw buttons
@@ -220,6 +224,22 @@ def draw_centered_text(surface, text, y_pos, font_size, color):
     text_rect = text_surface.get_rect()
 
     text_rect.midtop = (surface.get_width() / 2, y_pos)
+
+    surface.blit(text_surface, text_rect)
+
+
+def draw_aligned_text(surface, text, y_pos, font_size, color, alignment, padding):
+    font = pygame.font.Font(font_path, font_size)
+    text_surface = font.render(text, True, color)
+    text_rect = text_surface.get_rect()
+
+    if alignment == 'left':
+        text_rect.topleft = (padding, y_pos)
+    elif alignment == 'right':
+        x_pos = surface.get_width() - text_rect.width - padding
+        text_rect.topleft = (x_pos, y_pos)
+    else:
+        raise ValueError("Invalid alignment specified. Choose 'left' or 'right'.")
 
     surface.blit(text_surface, text_rect)
 

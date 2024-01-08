@@ -48,14 +48,14 @@ class Game:
     def load_slug_to_logo(self):
         """Load slug to logo mapping."""
         slug_to_logo = {
-            "appsem": pygame.image.load("assets/30x30/appsem_w.png"),
+            "appsem": pygame.image.load("assets/30x30/appsem.png"),
             "keyhole": pygame.image.load("assets/30x30/keyhole.png"),
             "android": pygame.image.load("assets/30x30/android.png"),
             "youtube": pygame.image.load("assets/30x30/youtube.png"),
             "doubleclick": pygame.image.load("assets/30x30/doubleclick.png"),
             "admob": pygame.image.load("assets/30x30/admob.png"),
-            "ita": pygame.image.load("assets/30x30/ita_w.png"),
-            "motorola": pygame.image.load("assets/30x30/motorola_w.png"),
+            "ita": pygame.image.load("assets/30x30/ita.png"),
+            "motorola": pygame.image.load("assets/30x30/motorola.png"),
             "waze": pygame.image.load("assets/30x30/waze.png"),
             "nest": pygame.image.load("assets/30x30/nest.png"),
             "deepmind": pygame.image.load("assets/30x30/deepmind.png"),
@@ -186,13 +186,13 @@ class Game:
             row["slug"] for row in self.special_data_points_info
         ]
 
-    def create_special_data_point(self, slug):
+    def create_special_data_point(self):
         """Create a special data point based on the slug."""
         if self.special_data_points_queue:
             next_slug = self.special_data_points_queue.pop(0)  # Get the next slug
             special_logo = self.slug_to_logo[next_slug]
             self.current_special_data_point = SpecialDataPoint(
-                special_logo, self.snake.body
+                special_logo, self.snake.body, next_slug
             )
             self.current_special_data_point_slug = next_slug
 
@@ -226,8 +226,8 @@ class Game:
             index = (self.data_point_counter // cfg.SPECIALS_RATE) % len(
                 self.slug_to_logo
             )
-            slug = list(self.slug_to_logo.keys())[index]
-            self.create_special_data_point(slug)
+            # slug = list(self.slug_to_logo.keys())[index]
+            self.create_special_data_point()
             self.data_point = None
         else:
             # Generate a new regular data point
@@ -277,7 +277,9 @@ class Game:
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_r:
+                if event.key == pygame.K_q:
+                    self.running = False
+                elif event.key == pygame.K_r:
                     self.state = "PLAY_STATE"
                     self.freeze_timer = cfg.FREEZE_TIMER
                     self.blink_count = 0

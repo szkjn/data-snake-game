@@ -114,6 +114,7 @@ def display_play_page(
 
 def display_welcome_page(window):
     window.fill(cfg.BLACK)
+    ascii_art_file_path = "assets/ascii/skull.txt"
 
     draw_centered_text(
         window,
@@ -138,6 +139,11 @@ def display_welcome_page(window):
         cfg.FONT_SIZE_XL,
         cfg.WHITE,
     )
+
+    image = create_pixelated_logo("assets/120x120/googlevil.png", cfg.WHITE, target_size=(100,100))
+    window.blit(image, (320,190))
+    window.blit(image, (80,190))
+
 
     play_button = Button(
         window,
@@ -200,26 +206,28 @@ def display_special_page(
         (row["text"] for row in special_data_points_info if row["slug"] == slug), ""
     )
 
-    draw_centered_text(window, "Congrats! You've just acquired:", 50, cfg.FONT_SIZE_XL, cfg.WHITE)
+    draw_centered_text(
+        window, "Congrats! You've just acquired:", 50, cfg.FONT_SIZE_XL, cfg.WHITE
+    )
     draw_centered_text(window, name, 90, cfg.FONT_SIZE_XL, cfg.WHITE)
     draw_ascii_art(window, ascii_art_file_path, (30, 125), cfg.FONT_SIZE_M, cfg.WHITE)
 
     logo_path = f"assets/120x120/{slug}.png"
-    draw_centered_logo(window, logo_path, 130, cfg.WHITE, pixel_size=1, target_size=(80,80))
-
-    draw_multiline_text(
-        window, text, (170, 210), cfg.FONT_SIZE_L, cfg.WHITE, cfg.WINDOW_SIZE[0] - 100
+    draw_centered_logo(
+        window, logo_path, 130, cfg.WHITE, pixel_size=1, target_size=(75, 75)
     )
 
-    # # Create and draw buttons
-    # play_button = Button(
-    #     window,
-    #     "(R)ESUME",
-    #     (cfg.CENTERED_BUTTON_X, 260),
-    #     (cfg.BUTTON_WIDTH, cfg.BUTTON_HEIGHT),
-    # )
-    # play_button.draw()
-    draw_centered_text(window, "(PRESS ANY KEY TO RESUME GAME)", window.get_size()[1] - 2 * cfg.SNAKE_SIZE, cfg.FONT_SIZE_L, cfg.WHITE)
+    draw_multiline_text(
+        window, text, (170, 210), cfg.FONT_SIZE_L, cfg.WHITE, cfg.WINDOW_SIZE[0] - 90
+    )
+
+    draw_centered_text(
+        window,
+        "(R)ESUME GAME OR (Q)UIT LIKE A COWARD",
+        window.get_size()[1] - 2 * cfg.SNAKE_SIZE,
+        cfg.FONT_SIZE_L,
+        cfg.WHITE,
+    )
 
     draw_play_zone(window)
     draw_score_counter(window, data_point_counter)
@@ -290,7 +298,14 @@ def draw_ascii_art(window, art_file_path, top_left_position, font_size, color):
             y += line_surface.get_height()  # Move to the next line
 
 
-def draw_centered_logo(surface, image_path, y_pos, color, pixel_size=1, target_size=(cfg.SNAKE_SIZE, cfg.SNAKE_SIZE)):
+def draw_centered_logo(
+    surface,
+    image_path,
+    y_pos,
+    color,
+    pixel_size=1,
+    target_size=(cfg.SNAKE_SIZE, cfg.SNAKE_SIZE),
+):
     """
     Draw a centered, pixelated, monochrome logo on the surface.
 
@@ -308,13 +323,14 @@ def draw_centered_logo(surface, image_path, y_pos, color, pixel_size=1, target_s
         # Get the rect of the pixelated logo and position it
         logo_rect = pixelated_logo.get_rect()
         logo_rect.midtop = (surface.get_width() // 2, y_pos)
-        
+
         # Draw the logo on the surface
         surface.blit(pixelated_logo, logo_rect)
 
 
-
-def create_pixelated_logo(image_path, color, pixel_size=1, target_size=(cfg.SNAKE_SIZE, cfg.SNAKE_SIZE)):
+def create_pixelated_logo(
+    image_path, color, pixel_size=1, target_size=(cfg.SNAKE_SIZE, cfg.SNAKE_SIZE)
+):
     """
     Convert a PNG logo to a pixelated monochrome logo using pygame.Rect.
 
@@ -330,20 +346,27 @@ def create_pixelated_logo(image_path, color, pixel_size=1, target_size=(cfg.SNAK
         print(f"Unable to load image: {e}")
         return None
 
-    # Scale the image to the target size
-    scaled_image = pygame.transform.scale(image, target_size)
+    # If pixel_size is high enough, return the original image (scaled to target size)
+    if pixel_size < 1.0:
+        # Calculate the downscaled size for increased pixelation
+        downscaled_size = max(1, int(target_size[0] * pixel_size)), max(1, int(target_size[1] * pixel_size))
 
-    # Create a surface to draw the pixelated image
+        # Scale the image down to create pixelation
+        downscaled_image = pygame.transform.scale(image, downscaled_size)
+
+        # Scale the pixelated image back up to the target size
+        final_image = pygame.transform.scale(downscaled_image, target_size)
+    else:
+        final_image = pygame.transform.scale(image, target_size)
+
+    # Create a new surface to apply the monochrome color
     pixelated_surface = pygame.Surface(target_size)
 
-    # Loop through each pixel in the scaled image
+    # Apply the monochrome color to the upscaled pixelated image
     for x in range(target_size[0]):
         for y in range(target_size[1]):
-            # Get the color of the pixel
-            pixel_color = scaled_image.get_at((x, y))
-
-            # Check if the pixel is not fully transparent
+            pixel_color = final_image.get_at((x, y))
             if pixel_color.a != 0:
-                pygame.draw.rect(pixelated_surface, color, (x * pixel_size, y * pixel_size, pixel_size, pixel_size))
+                pixelated_surface.set_at((x, y), color)
 
     return pixelated_surface

@@ -9,7 +9,7 @@ import pygame
 # Modules imports
 # ------------------------------------------
 import cfg
-
+from ui import create_pixelated_logo
 
 class Snake:
     def __init__(self):
@@ -18,8 +18,8 @@ class Snake:
         self.position = [100, 60]  # Starting position
         self.body = [[100, 60], [80, 60], [60, 60]]  # Initial body segments
         self.direction = "RIGHT"
-        self.head_img = pygame.image.load("assets/30x30/googlevil.png")
-        self.head_img = pygame.transform.scale(self.head_img, (self.size, self.size))
+        self.head_img = create_pixelated_logo("assets/120x120/googlevil.png", cfg.WHITE)
+        self.body_img = create_pixelated_logo("assets/120x120/googlevil.png", cfg.WHITE)
 
     def update_direction(self, new_direction):
         """Update the direction of the snake."""
@@ -53,8 +53,11 @@ class Snake:
 
     def draw(self, window):
         """Draw the snake on the window."""
-        for segment in self.body:
-            window.blit(self.head_img, (segment[0], segment[1]))
+        for i, segment in enumerate(self.body):
+            if i == 0:
+                window.blit(self.head_img, (segment[0], segment[1]))
+            else:
+                window.blit(self.body_img, (segment[0], segment[1]))
 
     def check_collision_with_self(self):
         """Check if the snake has collided with itself."""

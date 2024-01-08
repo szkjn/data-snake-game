@@ -10,14 +10,14 @@ import random
 # Modules imports
 # ------------------------------------------
 import cfg
-
+from ui import create_pixelated_logo
 
 class DataPoint:
     def __init__(self, snake_body):
         self.position = self.generate_random_position(snake_body)
         self.image = pygame.transform.scale(
-            pygame.image.load("assets/30x30/user_w.png"),
-            (cfg.SNAKE_SIZE, cfg.SNAKE_SIZE),
+            pygame.image.load("assets/30x30/user.png"),
+            (cfg.SNAKE_SIZE-2, cfg.SNAKE_SIZE-2),
         )
 
     def generate_random_position(self, snake_body):
@@ -49,11 +49,14 @@ class DataPoint:
 
 
 class SpecialDataPoint(DataPoint):
-    def __init__(self, special_logo, snake_body):
+    def __init__(self, special_logo, snake_body, slug):
         super().__init__(snake_body)
-        self.special_logo = pygame.transform.scale(
-            special_logo, (cfg.SNAKE_SIZE, cfg.SNAKE_SIZE)
-        )
+        # self.special_logo = pygame.transform.scale(
+        #     special_logo, (cfg.SNAKE_SIZE, cfg.SNAKE_SIZE)
+        # )
+        image_path = f"assets/30x30/{slug}.png"
+        self.special_logo = create_pixelated_logo(image_path, cfg.WHITE)
+
 
     def draw(self, window):
         """Draw the special data point on the given window."""

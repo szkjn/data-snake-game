@@ -19,6 +19,7 @@ class Game:
         self.running = True
 
         self.level = "Search Supremacist"
+        self.final_score = 0
 
         self.data_point_counter = 0
         self.slug_to_logo = self.load_slug_to_logo()
@@ -96,7 +97,7 @@ class Game:
                 )
             elif self.state == "GAME_OVER_STATE":
                 self.handle_game_over_page_events()
-                ui.display_game_over_page(self.window, self.data_point_counter)
+                ui.display_game_over_page(self.window, self.final_score)
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -132,6 +133,7 @@ class Game:
             self.snake.check_collision_with_self()
             or self.snake.check_collision_with_boundaries(cfg.WINDOW_SIZE)
         ):
+            self.final_score = self.data_point_counter
             self.state = "GAME_OVER_STATE"
             self.restart_game()
 

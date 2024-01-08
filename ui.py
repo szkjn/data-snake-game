@@ -120,13 +120,13 @@ def display_welcome_page(window):
     pygame.display.update()
 
 
-def display_game_over_page(window, data_point_counter):
+def display_game_over_page(window, final_score):
     window.fill(cfg.BLACK)
 
     draw_centered_text(window, "GAME OVER", 100, cfg.FONT_SIZE_XL, cfg.WHITE)
 
     draw_centered_text(
-        window, f"Score: {data_point_counter}", 125, cfg.FONT_SIZE_XL, cfg.WHITE
+        window, f"Score: {final_score}", 125, cfg.FONT_SIZE_XL, cfg.WHITE
     )
 
     # Create and draw buttons

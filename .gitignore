@@ -3,6 +3,7 @@ venv/
 
 # Test files
 test*
+assets/refs/
 
 # Cache
 __pycache__/

@@ -66,10 +66,11 @@ def draw_text(surface, text, position, font_size, color):
 
 
 def display_play_page(
-    window, snake, data_point, level, current_special_data_point, data_point_counter
+    window, snake, data_point, level, current_special_data_point, data_point_counter, snake_visible
 ):
     window.fill(cfg.BLACK)
-    snake.draw(window)
+    if snake_visible:
+        snake.draw(window)
 
     # Draw the regular data point if it exists
     if data_point is not None:

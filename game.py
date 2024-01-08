@@ -1,6 +1,4 @@
-import sys
 import pygame
-import random
 import csv
 
 import cfg
@@ -17,6 +15,10 @@ class Game:
         self.data_point = DataPoint(self.snake.body)
         self.clock = pygame.time.Clock()
         self.running = True
+        self.freeze_timer = 0
+        self.blink_count = 0
+        self.blink_timer = 0
+        self.snake_visible = True
 
         self.level = "Search Supremacist"
         self.final_score = 0
@@ -71,21 +73,49 @@ class Game:
 
     def run(self):
         while self.running:
+            # Calculate time passed per frame
+            dt = self.clock.tick(cfg.SNAKE_SPEED)
+
             if self.state == "WELCOME_STATE":
                 self.handle_welcome_page_events()
                 ui.display_welcome_page(self.window)
+
             elif self.state == "PLAY_STATE":
-                self.handle_events()
-                self.update_game_state()
-                ui.display_play_page(
-                    self.window,
-                    self.snake,
-                    self.data_point,
-                    self.level,
-                    self.current_special_data_point,
-                    self.data_point_counter,
-                )
-                self.clock.tick(cfg.SNAKE_SPEED)
+                if self.freeze_timer > 0:
+                    # Decrement the freeze timer
+                    self.freeze_timer -= dt
+                    self.handle_blinking(dt)
+
+                    # Render the play page only if the snake is visible
+                    ui.display_play_page(
+                        self.window,
+                        self.snake,
+                        self.data_point,
+                        self.level,
+                        self.current_special_data_point,
+                        self.data_point_counter,
+                        self.snake_visible
+                    )
+
+                    if self.freeze_timer <= 0:
+                        # Ensure timer doesn't go negative
+                        self.freeze_timer = 0
+                        self.reset_blinking()
+
+                else:
+                    # Normal gameplay
+                    self.handle_events()
+                    self.update_game_state()
+                    ui.display_play_page(
+                        self.window,
+                        self.snake,
+                        self.data_point,
+                        self.level,
+                        self.current_special_data_point,
+                        self.data_point_counter,
+                        self.snake_visible
+                    )
+
             elif self.state == "SPECIAL_STATE":
                 self.handle_special_page_events()
                 ui.display_special_page(
@@ -145,16 +175,10 @@ class Game:
         self.current_special_data_point = None
         self.current_special_data_point_slug = None
         self.special_data_point_collided = False
-        # self.data_point_pos = self.generate_data_point_pos()
         self.special_data_points_queue = [row["slug"] for row in self.special_data_points_info]
 
     def create_special_data_point(self, slug):
         """Create a special data point based on the slug."""
-        # special_logo = self.slug_to_logo[slug]
-        # self.current_special_data_point = SpecialDataPoint(
-        #     special_logo, self.snake.body
-        # )
-        # self.current_special_data_point_slug = slug
         if self.special_data_points_queue:
             next_slug = self.special_data_points_queue.pop(0)  # Get the next slug
             special_logo = self.slug_to_logo[next_slug]
@@ -240,3 +264,20 @@ class Game:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r:
                     self.state = "PLAY_STATE"
+                    self.freeze_timer = cfg.FREEZE_TIMER
+                    self.blink_count = 0
+
+    def handle_blinking(self, dt):
+        # Each full blink includes two phases: invisible and visible
+        if self.blink_count < 6:  # 3 full blinks (6 phases in total)
+            self.blink_timer += dt
+            if self.blink_timer >= cfg.FREEZE_TIMER/6:
+                self.snake_visible = not self.snake_visible
+                self.blink_timer -= cfg.FREEZE_TIMER/6  # Reset timer for the next phase
+                self.blink_count += 1
+
+    def reset_blinking(self):
+        """Reset blinking parameters after freeze."""
+        self.blink_count = 0
+        self.blink_timer = 0
+        self.snake_visible = True

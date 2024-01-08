@@ -12,7 +12,7 @@ GREEN = (0, 255, 0)
 
 # Snake settings
 SNAKE_SIZE = 20
-SNAKE_SPEED = 7
+SNAKE_SPEED = 11
 SPECIALS_RATE = 2
 
 # Button settings
@@ -36,3 +36,7 @@ PLAY_ZONE_RECT = pygame.Rect(
     WINDOW_SIZE[0] - 2 * PLAY_ZONE_PADDING,
     WINDOW_SIZE[1] - 5 * PLAY_ZONE_PADDING,
 )
+
+# Freeze and blinking
+FREEZE_TIMER = 999
+

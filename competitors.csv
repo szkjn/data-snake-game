@@ -1,5 +1,14 @@
-name;slug;year;text
-Applied Semantics;appliedsemantics;2003;"Mouhahaa, you're now part of my empire. AdSense just got a whole lot smarter. More data, more money, more power!"
-YouTube;youtube;2006;"Mmmy precious trove of endless videos. Great, now I can stuff myself with ever more user behavioral data. Watch, click, repeat!"
-DoubleClick;doubleclick;2007;"!! The jewel in my crown of ads. Tracking and targeting just went up a notch. Your clicks feed my knowledge, and my pockets."
-AdMob;admob;2009;"With you, I've conquered the mobile ad world too. Apps aren't just for fun; they're data mines, and I'm the miner."
+name;slug;year;text;level
+Applied Semantics;appliedsemantics;2003;"Ah, Applied Semantics, you're now part of my empire. AdSense just got a whole lot smarter. More data, more money, more power!";Search Supremacist
+Keyhole Inc.;keyhole;2004;"With Keyhole, I've got the world in my palm. Google Earth? More like Google's Earth. Every corner, every street, now under my watchful eye.";Search Supremacist
+Android Inc.;android;2005;"Android, welcome to the fold. Smartphones are no longer just phones; they're my eyes and ears in everyone's pockets.";Privacy Predator
+YouTube;youtube;2006;"YouTube, my precious trove of endless videos. Great, now I can stuff myself with ever more user behavioral data. Watch, click, repeat!";Privacy Predator
+DoubleClick;doubleclick;2007;"DoubleClick, the jewel in my crown of ads. Tracking and targeting just went up a notch. Your clicks feed my knowledge, and my pockets.";Surveillance Mogul
+AdMob;admob;2009;"With AdMob, I've conquered the mobile ad world too. Apps aren't just for fun; they're data mines, and I'm the miner.";Surveillance Mogul
+ITA Software;ita;2010;"ITA Software, now I know where you fly, when you fly, and maybe even why. The sky's not the limit for my data reach.";Omnipresent Big Brother
+Motorola Mobility;motorola;2011;"Motorola, briefly mine, a step into the hardware world. A move that whispered, 'I'm everywhere, even in your hardware.'";Omnipresent Big Brother
+Waze;waze;2013;"Waze, with your community-driven maps, I'm not just guiding; I'm learning. Every route you take, every traffic jam, it's all valuable intel.";Household Invader
+Nest Labs;nest;2014;"Nest, now I'm in your home, not just online. Your comfort, your habits, your life – it's all data for the taking.";Household Invader
+DeepMind Technologies;deepmind;2014;"DeepMind, my brain just got an upgrade. Artificial Intelligence, but my intelligence is no longer just artificial.";Household Invader
+Firebase;firebase;2014;"Firebase, making app development a breeze, and while I'm at it, collecting a treasure trove of app data. Every interaction counts.";Household Invader
+Looker;looker;2020;"Looker, you complete my data analytics ensemble. Insightful, powerful, and a little bit invasive – but let's keep that between us.";Surveillance Autocrat

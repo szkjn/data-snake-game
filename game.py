@@ -18,6 +18,8 @@ class Game:
         self.clock = pygame.time.Clock()
         self.running = True
 
+        self.level = "Search Supremacist"
+
         self.data_point_counter = 0
         self.slug_to_logo = self.load_slug_to_logo()
         self.current_special_data_point = None
@@ -28,6 +30,8 @@ class Game:
         self.quit_button_rect = pygame.Rect(100, 250, 200, 50)
 
         self.special_data_points_info = self.load_special_data_points()
+        self.special_data_points_queue = [row["slug"] for row in self.special_data_points_info]
+
 
     def load_slug_to_logo(self):
         """Load slug to logo mapping."""
@@ -35,9 +39,18 @@ class Game:
             "appliedsemantics": pygame.image.load(
                 "assets/thumbnail/appliedsemantics.png"
             ),
+            "keyhole": pygame.image.load("assets/thumbnail/google.png"),
+            "android": pygame.image.load("assets/thumbnail/google.png"),
             "youtube": pygame.image.load("assets/thumbnail/youtube.png"),
             "doubleclick": pygame.image.load("assets/thumbnail/doubleclick.png"),
             "admob": pygame.image.load("assets/thumbnail/admob.png"),
+            "ita": pygame.image.load("assets/thumbnail/google.png"),
+            "motorola": pygame.image.load("assets/thumbnail/google.png"),
+            "waze": pygame.image.load("assets/thumbnail/google.png"),
+            "nest": pygame.image.load("assets/thumbnail/google.png"),
+            "deepmind": pygame.image.load("assets/thumbnail/google.png"),
+            "firebase": pygame.image.load("assets/thumbnail/google.png"),
+            "looker": pygame.image.load("assets/thumbnail/google.png"),
         }
         # Scale logos to fit the snake size
         for slug, logo in slug_to_logo.items():
@@ -67,6 +80,7 @@ class Game:
                     self.window,
                     self.snake,
                     self.data_point,
+                    self.level,
                     self.current_special_data_point,
                     self.data_point_counter,
                 )
@@ -75,6 +89,7 @@ class Game:
                 self.handle_special_page_events()
                 ui.display_special_page(
                     self.window,
+                    self.level,
                     self.current_special_data_point_slug,
                     self.special_data_points_info,
                     self.data_point_counter,
@@ -117,32 +132,8 @@ class Game:
             self.snake.check_collision_with_self()
             or self.snake.check_collision_with_boundaries(cfg.WINDOW_SIZE)
         ):
-            self.game_over()
+            self.state = "GAME_OVER_STATE"
             self.restart_game()
-
-    # def render(self):
-    #     self.window.fill(cfg.BLACK)
-    #     self.snake.draw(self.window)
-
-    #     # Draw the regular data point if it exists
-    #     if self.data_point is not None:
-    #         self.data_point.draw(self.window)
-
-    #     # Draw the special data point if it exists
-    #     if self.current_special_data_point is not None:
-    #         self.current_special_data_point.draw(self.window)
-
-    #     # Draw the play zone border
-    #     play_zone_padding = cfg.SNAKE_SIZE
-    #     play_zone_rect = pygame.Rect(play_zone_padding, play_zone_padding,
-    #                                  self.window.get_size()[0] - 2 * play_zone_padding,
-    #                                  self.window.get_size()[1] - 5 * play_zone_padding)
-    #     pygame.draw.rect(self.window, cfg.WHITE, play_zone_rect, 1)  # 1 is the border width
-
-    #     pygame.display.update()
-
-    def game_over(self):
-        self.state = "GAME_OVER_STATE"
 
     def restart_game(self):
         """Implement restart game logic."""
@@ -153,14 +144,20 @@ class Game:
         self.current_special_data_point_slug = None
         self.special_data_point_collided = False
         # self.data_point_pos = self.generate_data_point_pos()
+        self.special_data_points_queue = [row["slug"] for row in self.special_data_points_info]
 
     def create_special_data_point(self, slug):
         """Create a special data point based on the slug."""
-        special_logo = self.slug_to_logo[slug]
-        self.current_special_data_point = SpecialDataPoint(
-            special_logo, self.snake.body
-        )
-        self.current_special_data_point_slug = slug
+        # special_logo = self.slug_to_logo[slug]
+        # self.current_special_data_point = SpecialDataPoint(
+        #     special_logo, self.snake.body
+        # )
+        # self.current_special_data_point_slug = slug
+        if self.special_data_points_queue:
+            next_slug = self.special_data_points_queue.pop(0)  # Get the next slug
+            special_logo = self.slug_to_logo[next_slug]
+            self.current_special_data_point = SpecialDataPoint(special_logo, self.snake.body)
+            self.current_special_data_point_slug = next_slug
 
     def check_collision_with_data_point(self):
         """Check if the snake has collided with a data point."""
@@ -202,6 +199,11 @@ class Game:
     def handle_special_data_point_collision(self):
         """Handle the logic when the snake collides with a special data point."""
         self.snake.grow()
+
+        # Update level based on the current special data point
+        self.level = next(
+            (row["level"] for row in self.special_data_points_info if row["slug"] == self.current_special_data_point_slug),
+        )
 
         # Recreate a new data point randomly
         self.data_point = DataPoint(self.snake.body)

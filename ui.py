@@ -35,6 +35,18 @@ def draw_score_counter(window, data_point_counter):
         cfg.WHITE,
     )
 
+def draw_level(window, level):
+    play_zone_padding = cfg.SNAKE_SIZE
+
+    draw_text(
+        window,
+        f"Level: {level}",
+        (150, window.get_size()[1] - 4 * play_zone_padding),
+        cfg.FONT_SIZE_L,
+        cfg.WHITE,
+    )
+
+
 def draw_button(surface, text, position, size):
     font = pygame.font.Font(font_path, cfg.FONT_SIZE_L)
     text_render = font.render(text, True, cfg.WHITE)
@@ -50,7 +62,7 @@ def draw_text(surface, text, position, font_size, color):
 
 
 def display_play_page(
-    window, snake, data_point, current_special_data_point, data_point_counter
+    window, snake, data_point, level, current_special_data_point, data_point_counter
 ):
     window.fill(cfg.BLACK)
     snake.draw(window)
@@ -74,7 +86,7 @@ def display_play_page(
     pygame.draw.rect(window, cfg.WHITE, play_zone_rect, 1)  # 1 is the border width
 
     draw_score_counter(window, data_point_counter)
-
+    draw_level(window, level)
     pygame.display.update()
 
 
@@ -137,7 +149,7 @@ def display_game_over_page(window, data_point_counter):
     pygame.display.update()
 
 
-def display_special_page(window, slug, special_data_points_info, data_point_counter):
+def display_special_page(window, level, slug, special_data_points_info, data_point_counter):
     window.fill(cfg.BLACK)
     ascii_art_file_path = 'assets/ascii/evil.txt'
 
@@ -172,6 +184,7 @@ def display_special_page(window, slug, special_data_points_info, data_point_coun
 
     draw_play_zone(window)
     draw_score_counter(window, data_point_counter)
+    draw_level(window, level)
 
     pygame.display.update()
 

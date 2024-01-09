@@ -15,8 +15,8 @@ class Snake:
     def __init__(self):
         # Initial settings
         self.size = cfg.SNAKE_SIZE
-        self.position = [100, 60]  # Starting position
-        self.body = [[100, 60], [80, 60], [60, 60]]  # Initial body segments
+        self.position = [self.size*5, self.size*3]  # Starting position
+        self.body = [[self.size*5, self.size*3], [self.size*4, self.size*3], [self.size*3, self.size*3]]  # Initial body segments
         self.direction = "RIGHT"
         self.head_img = create_pixelated_logo("assets/120x120/googlevil.png", cfg.WHITE)
         self.body_img = create_pixelated_logo("assets/120x120/googlevil.png", cfg.WHITE)

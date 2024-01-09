@@ -119,7 +119,7 @@ def display_welcome_page(window):
     draw_centered_text(
         window,
         "Welcome to Google's Snakeopoly!",
-        50,
+        cfg.PLAY_ZONE_HEIGHT*0.2,
         cfg.FONT_SIZE_XL,
         cfg.WHITE,
     )
@@ -127,7 +127,7 @@ def display_welcome_page(window):
     draw_centered_text(
         window,
         "Slither your way",
-        100,
+        cfg.PLAY_ZONE_HEIGHT*0.35,
         cfg.FONT_SIZE_XL,
         cfg.WHITE,
     )
@@ -135,30 +135,22 @@ def display_welcome_page(window):
     draw_centered_text(
         window,
         "to Surveillance Sovereignty!",
-        125,
+        cfg.PLAY_ZONE_HEIGHT*0.45,
         cfg.FONT_SIZE_XL,
         cfg.WHITE,
     )
 
-    image = create_pixelated_logo("assets/120x120/googlevil.png", cfg.WHITE, target_size=(100,100))
-    window.blit(image, (320,190))
-    window.blit(image, (80,190))
+    logo_size = cfg.SNAKE_SIZE*4
+    image = create_pixelated_logo("assets/120x120/googlevil.png", cfg.WHITE, target_size=(logo_size,logo_size))
+    window.blit(image, (cfg.PLAY_ZONE_WIDTH*0.5 - logo_size/5,cfg.PLAY_ZONE_HEIGHT*0.7))
 
-
-    play_button = Button(
+    draw_centered_text(
         window,
-        "(P)LAY",
-        (cfg.CENTERED_BUTTON_X, 200),
-        (cfg.BUTTON_WIDTH, cfg.BUTTON_HEIGHT),
+        "(P)LAY GAME OR (Q)UIT LIKE A COWARD",
+        window.get_size()[1] - 2 * cfg.SNAKE_SIZE,
+        cfg.FONT_SIZE_L,
+        cfg.WHITE,
     )
-    play_button.draw()
-    quit_button = Button(
-        window,
-        "(Q)UIT",
-        (cfg.CENTERED_BUTTON_X, 250),
-        (cfg.BUTTON_WIDTH, cfg.BUTTON_HEIGHT),
-    )
-    quit_button.draw()
 
     draw_play_zone(window)
     pygame.display.update()
@@ -167,27 +159,19 @@ def display_welcome_page(window):
 def display_game_over_page(window, final_score):
     window.fill(cfg.BLACK)
 
-    draw_centered_text(window, "GAME OVER", 100, cfg.FONT_SIZE_XL, cfg.WHITE)
+    draw_centered_text(window, "GAME OVER", cfg.PLAY_ZONE_HEIGHT*0.2, cfg.FONT_SIZE_XL, cfg.WHITE)
 
     draw_centered_text(
-        window, f"Score: {final_score}", 125, cfg.FONT_SIZE_XL, cfg.WHITE
+        window, f"Score: {final_score}", cfg.PLAY_ZONE_HEIGHT*0.35, cfg.FONT_SIZE_XL, cfg.WHITE
     )
 
-    # Create and draw buttons
-    play_button = Button(
+    draw_centered_text(
         window,
-        "(P)lay",
-        (cfg.CENTERED_BUTTON_X, 200),
-        (cfg.BUTTON_WIDTH, cfg.BUTTON_HEIGHT),
+        "RE(P)LAY GAME OR QUIT LIKE A (Q)OWARD",
+        window.get_size()[1] - 2 * cfg.SNAKE_SIZE,
+        cfg.FONT_SIZE_L,
+        cfg.WHITE,
     )
-    play_button.draw()
-    quit_button = Button(
-        window,
-        "(Q)uit",
-        (cfg.CENTERED_BUTTON_X, 250),
-        (cfg.BUTTON_WIDTH, cfg.BUTTON_HEIGHT),
-    )
-    quit_button.draw()
 
     draw_play_zone(window)
     pygame.display.update()
@@ -207,18 +191,18 @@ def display_special_page(
     )
 
     draw_centered_text(
-        window, "Congrats! You've just acquired:", 50, cfg.FONT_SIZE_XL, cfg.WHITE
+        window, "Congrats! You've just acquired:", cfg.PLAY_ZONE_HEIGHT*0.15, cfg.FONT_SIZE_XL, cfg.WHITE
     )
-    draw_centered_text(window, name, 90, cfg.FONT_SIZE_XL, cfg.WHITE)
-    draw_ascii_art(window, ascii_art_file_path, (30, 125), cfg.FONT_SIZE_M, cfg.WHITE)
+    draw_centered_text(window, name, cfg.PLAY_ZONE_HEIGHT*0.25, cfg.FONT_SIZE_XL, cfg.WHITE)
+    draw_ascii_art(window, ascii_art_file_path, (cfg.PLAY_ZONE_WIDTH*1/10, cfg.PLAY_ZONE_HEIGHT*0.6), cfg.FONT_SIZE_M, cfg.WHITE)
 
     logo_path = f"assets/120x120/{slug}.png"
     draw_centered_logo(
-        window, logo_path, 130, cfg.WHITE, pixel_size=1, target_size=(75, 75)
+        window, logo_path, cfg.PLAY_ZONE_HEIGHT*0.4, cfg.WHITE, pixel_size=1, target_size=(cfg.WINDOW_UNIT*3, cfg.WINDOW_UNIT*3)
     )
 
     draw_multiline_text(
-        window, text, (170, 210), cfg.FONT_SIZE_L, cfg.WHITE, cfg.WINDOW_SIZE[0] - 90
+        window, text, (cfg.PLAY_ZONE_WIDTH*1/3, cfg.PLAY_ZONE_HEIGHT*2/3), cfg.FONT_SIZE_L, cfg.WHITE, cfg.PLAY_ZONE_WIDTH * 0.95
     )
 
     draw_centered_text(
@@ -366,7 +350,7 @@ def create_pixelated_logo(
     for x in range(target_size[0]):
         for y in range(target_size[1]):
             pixel_color = final_image.get_at((x, y))
-            if pixel_color.a != 0:
+            if pixel_color.a > 0:
                 pixelated_surface.set_at((x, y), color)
 
     return pixelated_surface

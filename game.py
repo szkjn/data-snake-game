@@ -35,6 +35,7 @@ class Game:
         self.offset = 0
         self.morph_offset = 0
 
+        self.blink_active = False
         self.chars_displayed = 0
 
         self.data_point_counter = 0
@@ -94,14 +95,20 @@ class Game:
                 self.frame_count += 1
                 self.handle_welcome_page_events()
 
+                if self.blink_active and self.frame_count > 20:
+                    blink_visible = (pygame.time.get_ticks() // 500) % 2 == 0
+                else:
+                    blink_visible = False
+
                 # Start morphing after a specific frame count is reached
                 if self.frame_count >= cfg.MORPH_START_FRAME:
                     self.morph_offset += cfg.MORPH_SPEED
                     if self.morph_offset >= cfg.MORPH_DISTANCE:
                         self.morph_offset = cfg.MORPH_DISTANCE
                         self.morph_offset = 0
+                        self.blink_active = True
 
-                ui.display_welcome_page(self.window, self.morph_offset)
+                ui.display_welcome_page(self.window, self.morph_offset, blink_visible)
 
             elif self.state == "PLAY_STATE":
                 if self.freeze_timer > 0:

@@ -111,7 +111,7 @@ def display_play_page(
     pygame.display.update()
 
 
-def display_welcome_page(window, morph_offset):
+def display_welcome_page(window, morph_offset, blink_visible):
 
     window.fill(cfg.BLACK)
     ascii_art_file_path = "assets/ascii/skull.txt"
@@ -142,13 +142,14 @@ def display_welcome_page(window, morph_offset):
 
     draw_welcome_animation(window, cfg.PLAY_ZONE_HEIGHT * 0.7, morph_offset)
 
-    draw_centered_text(
-        window,
-        "(P)LAY GAME OR (Q)UIT LIKE A COWARD",
-        window.get_size()[1] - 2 * cfg.SNAKE_SIZE,
-        cfg.FONT_SIZE_L,
-        cfg.WHITE,
-    )
+    if blink_visible:
+        draw_centered_text(
+            window,
+            "(P)LAY GAME OR (Q)UIT LIKE A COWARD",
+            window.get_size()[1] - 2.2 * cfg.SNAKE_SIZE,
+            cfg.FONT_SIZE_L,
+            cfg.WHITE,
+        )
 
     draw_play_zone(window)
     pygame.display.update()
@@ -251,7 +252,7 @@ def display_special_page(
             draw_centered_text(
                 window,
                 "(R)ESUME GAME OR (Q)UIT LIKE A COWARD",
-                window.get_size()[1] - 2 * cfg.SNAKE_SIZE,
+                window.get_size()[1] - 2.2 * cfg.SNAKE_SIZE,
                 cfg.FONT_SIZE_L,
                 cfg.WHITE,
             )

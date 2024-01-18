@@ -53,11 +53,11 @@ class Snake:
 
     def draw(self, window):
         """Draw the snake on the window."""
-        for i, segment in enumerate(self.body):
-            if i == 0:
+        for segment in self.body:
+            if segment == self.body[0]:
                 window.blit(self.head_img, (segment[0], segment[1]))
             else:
-                window.blit(self.body_img, (segment[0], segment[1]))
+                pygame.draw.rect(window, cfg.WHITE, [segment[0], segment[1], cfg.SNAKE_SIZE, cfg.SNAKE_SIZE])
 
     def check_collision_with_self(self):
         """Check if the snake has collided with itself."""

@@ -31,6 +31,10 @@ class Game:
         self.level = "Search Giant"
         self.final_score = 0
 
+        self.frame_count = 0
+        self.offset = 0
+        self.morph_offset = 0
+
         self.data_point_counter = 0
         self.slug_to_logo = self.load_slug_to_logo()
         self.current_special_data_point = None
@@ -84,8 +88,17 @@ class Game:
             dt = self.clock.tick(cfg.SNAKE_SPEED)
 
             if self.state == "WELCOME_STATE":
+                self.frame_count += 1      
                 self.handle_welcome_page_events()
-                ui.display_welcome_page(self.window)
+
+                # Start morphing after a specific frame count is reached
+                if self.frame_count >= cfg.MORPH_START_FRAME:
+                    self.morph_offset += cfg.MORPH_SPEED
+                    if self.morph_offset >= cfg.MORPH_DISTANCE:
+                        self.morph_offset = cfg.MORPH_DISTANCE
+                        self.morph_offset = 0
+
+                ui.display_welcome_page(self.window, self.morph_offset)
 
             elif self.state == "PLAY_STATE":
                 if self.freeze_timer > 0:
@@ -134,7 +147,7 @@ class Game:
                 )
             elif self.state == "GAME_OVER_STATE":
                 self.handle_game_over_page_events()
-                ui.display_game_over_page(self.window, self.final_score)
+                ui.display_game_over_page(self.window, self.final_score, self.level)
 
     def handle_events(self):
         for event in pygame.event.get():

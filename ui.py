@@ -9,6 +9,7 @@ import pygame
 # Modules imports
 # ------------------------------------------
 import cfg
+import design
 
 
 font_path = "assets/font/VT323/VT323-Regular.ttf"
@@ -112,13 +113,14 @@ def display_play_page(
     pygame.display.update()
 
 
-def display_welcome_page(window):
+def display_welcome_page(window, morph_offset):
+
     window.fill(cfg.BLACK)
-    ascii_art_file_path = "assets/ascii/skull.txt"
+    # ascii_art_file_path = "assets/ascii/skull.txt"
 
     draw_centered_text(
         window,
-        "Welcome to Google's Snakeopoly!",
+        "Welcome to the Snakeopoly!",
         cfg.PLAY_ZONE_HEIGHT*0.2,
         cfg.FONT_SIZE_XL,
         cfg.WHITE,
@@ -140,10 +142,8 @@ def display_welcome_page(window):
         cfg.WHITE,
     )
 
-    logo_size = cfg.SNAKE_SIZE*4
-    image = create_pixelated_logo("assets/120x120/googlevil.png", cfg.WHITE, target_size=(logo_size,logo_size))
-    window.blit(image, (cfg.PLAY_ZONE_WIDTH*0.5 - logo_size/5,cfg.PLAY_ZONE_HEIGHT*0.7))
-
+    draw_welcome_animation(window, cfg.PLAY_ZONE_HEIGHT*0.7, morph_offset)
+ 
     draw_centered_text(
         window,
         "(P)LAY GAME OR (Q)UIT LIKE A COWARD",
@@ -156,13 +156,18 @@ def display_welcome_page(window):
     pygame.display.update()
 
 
-def display_game_over_page(window, final_score):
+
+def display_game_over_page(window, final_score, level):
     window.fill(cfg.BLACK)
 
     draw_centered_text(window, "GAME OVER", cfg.PLAY_ZONE_HEIGHT*0.2, cfg.FONT_SIZE_XL, cfg.WHITE)
 
     draw_centered_text(
         window, f"Score: {final_score}", cfg.PLAY_ZONE_HEIGHT*0.35, cfg.FONT_SIZE_XL, cfg.WHITE
+    )
+
+    draw_centered_text(
+        window, f"Level: {level}", cfg.PLAY_ZONE_HEIGHT*0.45, cfg.FONT_SIZE_XL, cfg.WHITE
     )
 
     draw_centered_text(
@@ -323,34 +328,65 @@ def create_pixelated_logo(
     :param pixel_size: Size of each 'pixel' in the pixelated image.
     :return: Surface with the pixelated image.
     """
-    # Load the image
     try:
-        image = pygame.image.load(image_path)
+        image = pygame.image.load(image_path).convert_alpha()
     except pygame.error as e:
         print(f"Unable to load image: {e}")
         return None
 
     # If pixel_size is high enough, return the original image (scaled to target size)
     if pixel_size < 1.0:
-        # Calculate the downscaled size for increased pixelation
-        downscaled_size = max(1, int(target_size[0] * pixel_size)), max(1, int(target_size[1] * pixel_size))
-
-        # Scale the image down to create pixelation
+        downscaled_size = (max(1, int(target_size[0] * pixel_size)), 
+                           max(1, int(target_size[1] * pixel_size)))
         downscaled_image = pygame.transform.scale(image, downscaled_size)
-
-        # Scale the pixelated image back up to the target size
         final_image = pygame.transform.scale(downscaled_image, target_size)
     else:
         final_image = pygame.transform.scale(image, target_size)
 
-    # Create a new surface to apply the monochrome color
-    pixelated_surface = pygame.Surface(target_size)
+    # Create a new surface with per-pixel alpha
+    pixelated_surface = pygame.Surface(target_size, pygame.SRCALPHA)
 
     # Apply the monochrome color to the upscaled pixelated image
     for x in range(target_size[0]):
         for y in range(target_size[1]):
             pixel_color = final_image.get_at((x, y))
-            if pixel_color.a > 0:
-                pixelated_surface.set_at((x, y), color)
+            if pixel_color.a > 0:  # Check if the pixel is not transparent
+                pixelated_surface.set_at((x, y), color + (pixel_color.a,))  # Preserve the alpha value
 
     return pixelated_surface
+
+
+def draw_welcome_animation(window, y, morph_offset):
+    # logo_path = f"assets/120x120/google.png"
+    # draw_centered_logo(
+    #     window, logo_path, cfg.PLAY_ZONE_HEIGHT*0.7, (200,0,0), pixel_size=1, target_size=(cfg.WINDOW_UNIT*3, cfg.WINDOW_UNIT*3)
+    # )
+
+    alpha = min(morph_offset / cfg.MORPH_DISTANCE, 1)
+    current_pattern = get_transition_pattern(design.G_2, design.SIX_2, alpha)
+    char_width = (len(current_pattern[0]) * cfg.PIXEL_SIZE)
+    draw_char(window, current_pattern, (window.get_width() / 2) - char_width/2, y)
+
+    if current_pattern == design.SIX_2:
+        draw_char(window, design.SIX_2, window.get_width() / 2 - char_width*1.666, y)
+        draw_char(window, design.SIX_2, window.get_width() / 2 + char_width*0.666, y)
+
+def draw_char(window, char, x, y):
+    for i, row in enumerate(char):
+        for j, pixel in enumerate(row):
+            if pixel:
+                pygame.draw.rect(window, cfg.WHITE, (x + j * cfg.PIXEL_SIZE, y + i * cfg.PIXEL_SIZE, cfg.PIXEL_SIZE, cfg.PIXEL_SIZE))
+
+
+def linear_interpolate(start_val, end_val, alpha):
+    return start_val * (1 - alpha) + end_val * alpha
+
+def get_transition_pattern(start_pattern, end_pattern, alpha):
+    transition_pattern = []
+    for row_s, row_e in zip(start_pattern, end_pattern):
+        transition_row = []
+        for val_s, val_e in zip(row_s, row_e):
+            transition_val = round(linear_interpolate(val_s, val_e, alpha))
+            transition_row.append(transition_val)
+        transition_pattern.append(transition_row)
+    return transition_pattern

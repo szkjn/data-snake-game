@@ -57,7 +57,8 @@ class Snake:
             if segment == self.body[0]:
                 window.blit(self.head_img, (segment[0], segment[1]))
             else:
-                pygame.draw.rect(window, cfg.WHITE, [segment[0], segment[1], cfg.SNAKE_SIZE, cfg.SNAKE_SIZE])
+                window.blit(self.head_img, (segment[0], segment[1]))
+                # pygame.draw.rect(window, cfg.WHITE, [segment[0], segment[1], cfg.SNAKE_SIZE, cfg.SNAKE_SIZE])
 
     def check_collision_with_self(self):
         """Check if the snake has collided with itself."""

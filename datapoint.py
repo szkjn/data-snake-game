@@ -15,10 +15,11 @@ from ui import create_pixelated_logo
 class DataPoint:
     def __init__(self, snake_body):
         self.position = self.generate_random_position(snake_body)
-        self.image = pygame.transform.scale(
-            pygame.image.load("assets/30x30/user.png"),
-            (cfg.SNAKE_SIZE-2, cfg.SNAKE_SIZE-2),
-        )
+        # self.user_logo = pygame.transform.scale(
+        #     pygame.image.load("assets/30x30/user.png"),
+        #     (cfg.SNAKE_SIZE-2, cfg.SNAKE_SIZE-2),
+        # )
+        self.user_logo = create_pixelated_logo("assets/30x30/user.png", cfg.WHITE)
 
     def generate_random_position(self, snake_body):
         """Generate a random position for the data point."""
@@ -41,7 +42,7 @@ class DataPoint:
 
     def draw(self, window):
         """Draw the data point on the given window."""
-        window.blit(self.image, (self.position[0], self.position[1]))
+        window.blit(self.user_logo, (self.position[0], self.position[1]))
 
     def reset_position(self, snake_body):
         """Reset the position of the data point."""

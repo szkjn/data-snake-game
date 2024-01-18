@@ -22,18 +22,16 @@ class Button:
         self.rect = pygame.Rect(position, size)
 
     def draw(self):
-        # Draw the button
         draw_button(self.surface, self.text, self.rect.topleft, self.rect.size)
 
     def is_clicked(self, event):
-        # Check if the button is clicked
         return event.type == pygame.MOUSEBUTTONDOWN and self.rect.collidepoint(
             event.pos
         )
 
 
 def draw_play_zone(window):
-    pygame.draw.rect(window, cfg.WHITE, cfg.PLAY_ZONE_RECT, 1)
+    pygame.draw.rect(window, cfg.WHITE, cfg.PLAY_ZONE_RECT, 2)
 
 
 def draw_score_counter(window, data_point_counter):
@@ -106,8 +104,8 @@ def display_play_page(
         window.get_size()[0] - 2 * play_zone_padding,
         window.get_size()[1] - 5 * play_zone_padding,
     )
-    pygame.draw.rect(window, cfg.WHITE, play_zone_rect, 1)  # 1 is the border width
 
+    draw_play_zone(window)
     draw_score_counter(window, data_point_counter)
     draw_level(window, level)
     pygame.display.update()

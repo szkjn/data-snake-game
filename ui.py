@@ -114,7 +114,7 @@ def display_play_page(
 def display_welcome_page(window, morph_offset):
 
     window.fill(cfg.BLACK)
-    # ascii_art_file_path = "assets/ascii/skull.txt"
+    ascii_art_file_path = "assets/ascii/skull.txt"
 
     draw_centered_text(
         window,

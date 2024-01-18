@@ -119,7 +119,7 @@ def display_welcome_page(window, morph_offset):
     draw_centered_text(
         window,
         "Welcome to the Snakeopoly!",
-        cfg.PLAY_ZONE_HEIGHT*0.2,
+        cfg.PLAY_ZONE_HEIGHT * 0.2,
         cfg.FONT_SIZE_XL,
         cfg.WHITE,
     )
@@ -127,7 +127,7 @@ def display_welcome_page(window, morph_offset):
     draw_centered_text(
         window,
         "Slither your way",
-        cfg.PLAY_ZONE_HEIGHT*0.35,
+        cfg.PLAY_ZONE_HEIGHT * 0.35,
         cfg.FONT_SIZE_XL,
         cfg.WHITE,
     )
@@ -135,13 +135,13 @@ def display_welcome_page(window, morph_offset):
     draw_centered_text(
         window,
         "to Surveillance Sovereignty!",
-        cfg.PLAY_ZONE_HEIGHT*0.45,
+        cfg.PLAY_ZONE_HEIGHT * 0.45,
         cfg.FONT_SIZE_XL,
         cfg.WHITE,
     )
 
-    draw_welcome_animation(window, cfg.PLAY_ZONE_HEIGHT*0.7, morph_offset)
- 
+    draw_welcome_animation(window, cfg.PLAY_ZONE_HEIGHT * 0.7, morph_offset)
+
     draw_centered_text(
         window,
         "(P)LAY GAME OR (Q)UIT LIKE A COWARD",
@@ -154,18 +154,27 @@ def display_welcome_page(window, morph_offset):
     pygame.display.update()
 
 
-
 def display_game_over_page(window, final_score, level):
     window.fill(cfg.BLACK)
 
-    draw_centered_text(window, "GAME OVER", cfg.PLAY_ZONE_HEIGHT*0.2, cfg.FONT_SIZE_XL, cfg.WHITE)
-
     draw_centered_text(
-        window, f"Score: {final_score}", cfg.PLAY_ZONE_HEIGHT*0.35, cfg.FONT_SIZE_XL, cfg.WHITE
+        window, "GAME OVER", cfg.PLAY_ZONE_HEIGHT * 0.2, cfg.FONT_SIZE_XL, cfg.WHITE
     )
 
     draw_centered_text(
-        window, f"Level: {level}", cfg.PLAY_ZONE_HEIGHT*0.45, cfg.FONT_SIZE_XL, cfg.WHITE
+        window,
+        f"Score: {final_score}",
+        cfg.PLAY_ZONE_HEIGHT * 0.35,
+        cfg.FONT_SIZE_XL,
+        cfg.WHITE,
+    )
+
+    draw_centered_text(
+        window,
+        f"Level: {level}",
+        cfg.PLAY_ZONE_HEIGHT * 0.45,
+        cfg.FONT_SIZE_XL,
+        cfg.WHITE,
     )
 
     draw_centered_text(
@@ -181,7 +190,13 @@ def display_game_over_page(window, final_score, level):
 
 
 def display_special_page(
-    window, level, slug, special_data_points_info, data_point_counter, chars_displayed, blink_visible=True
+    window,
+    level,
+    slug,
+    special_data_points_info,
+    data_point_counter,
+    chars_displayed,
+    blink_visible=True,
 ):
     window.fill(cfg.BLACK)
     ascii_art_file_path = "assets/ascii/evil.txt"
@@ -194,18 +209,41 @@ def display_special_page(
     )
 
     draw_centered_text(
-        window, "Congrats! You've just acquired:", cfg.PLAY_ZONE_HEIGHT*0.15, cfg.FONT_SIZE_XL, cfg.WHITE
+        window,
+        "Congrats! You've just acquired:",
+        cfg.PLAY_ZONE_HEIGHT * 0.15,
+        cfg.FONT_SIZE_XL,
+        cfg.WHITE,
     )
-    draw_centered_text(window, name, cfg.PLAY_ZONE_HEIGHT*0.25, cfg.FONT_SIZE_XL, cfg.WHITE)
-    draw_ascii_art(window, ascii_art_file_path, (cfg.PLAY_ZONE_WIDTH*1/10, cfg.PLAY_ZONE_HEIGHT*0.6), cfg.FONT_SIZE_M, cfg.WHITE)
+    draw_centered_text(
+        window, name, cfg.PLAY_ZONE_HEIGHT * 0.25, cfg.FONT_SIZE_XL, cfg.WHITE
+    )
+    draw_ascii_art(
+        window,
+        ascii_art_file_path,
+        (cfg.PLAY_ZONE_WIDTH * 1 / 10, cfg.PLAY_ZONE_HEIGHT * 0.6),
+        cfg.FONT_SIZE_M,
+        cfg.WHITE,
+    )
 
     logo_path = f"assets/120x120/{slug}.png"
     draw_centered_logo(
-        window, logo_path, cfg.PLAY_ZONE_HEIGHT*0.4, cfg.WHITE, pixel_size=1, target_size=(cfg.WINDOW_UNIT*3, cfg.WINDOW_UNIT*3)
+        window,
+        logo_path,
+        cfg.PLAY_ZONE_HEIGHT * 0.4,
+        cfg.WHITE,
+        pixel_size=1,
+        target_size=(cfg.WINDOW_UNIT * 3, cfg.WINDOW_UNIT * 3),
     )
 
     draw_multiline_text(
-        window, text, (cfg.PLAY_ZONE_WIDTH*1/3, cfg.PLAY_ZONE_HEIGHT*2/3), cfg.FONT_SIZE_L, cfg.WHITE, cfg.PLAY_ZONE_WIDTH * 0.95, chars_displayed
+        window,
+        text,
+        (cfg.PLAY_ZONE_WIDTH * 1 / 3, cfg.PLAY_ZONE_HEIGHT * 2 / 3),
+        cfg.FONT_SIZE_L,
+        cfg.WHITE,
+        cfg.PLAY_ZONE_WIDTH * 0.95,
+        chars_displayed,
     )
 
     if chars_displayed >= len(text):
@@ -217,7 +255,7 @@ def display_special_page(
                 cfg.FONT_SIZE_L,
                 cfg.WHITE,
             )
-            
+
     draw_play_zone(window)
     draw_score_counter(window, data_point_counter)
     draw_level(window, level)
@@ -225,7 +263,9 @@ def display_special_page(
     pygame.display.update()
 
 
-def draw_multiline_text(surface, text, position, font_size, color, max_line_width, chars_displayed):
+def draw_multiline_text(
+    surface, text, position, font_size, color, max_line_width, chars_displayed
+):
     text = f'"{text}"'
     font = pygame.font.Font(font_path, font_size)
     space = font.size(" ")[0]  # Width of a space.
@@ -235,7 +275,9 @@ def draw_multiline_text(surface, text, position, font_size, color, max_line_widt
 
     for word in text.split(" "):
         if current_chars_count + len(word) > chars_displayed:
-            word = word[:max(0, chars_displayed - current_chars_count)]  # Trim the word to fit the chars_displayed
+            word = word[
+                : max(0, chars_displayed - current_chars_count)
+            ]  # Trim the word to fit the chars_displayed
         word_surface = font.render(word, True, color)
         word_width, word_height = word_surface.get_size()
 
@@ -343,8 +385,10 @@ def create_pixelated_logo(
 
     # If pixel_size is high enough, return the original image (scaled to target size)
     if pixel_size < 1.0:
-        downscaled_size = (max(1, int(target_size[0] * pixel_size)), 
-                           max(1, int(target_size[1] * pixel_size)))
+        downscaled_size = (
+            max(1, int(target_size[0] * pixel_size)),
+            max(1, int(target_size[1] * pixel_size)),
+        )
         downscaled_image = pygame.transform.scale(image, downscaled_size)
         final_image = pygame.transform.scale(downscaled_image, target_size)
     else:
@@ -358,7 +402,9 @@ def create_pixelated_logo(
         for y in range(target_size[1]):
             pixel_color = final_image.get_at((x, y))
             if pixel_color.a > 0:  # Check if the pixel is not transparent
-                pixelated_surface.set_at((x, y), color + (pixel_color.a,))  # Preserve the alpha value
+                pixelated_surface.set_at(
+                    (x, y), color + (pixel_color.a,)
+                )  # Preserve the alpha value
 
     return pixelated_surface
 
@@ -371,22 +417,33 @@ def draw_welcome_animation(window, y, morph_offset):
 
     alpha = min(morph_offset / cfg.MORPH_DISTANCE, 1)
     current_pattern = get_transition_pattern(design.G_2, design.SIX_2, alpha)
-    char_width = (len(current_pattern[0]) * cfg.PIXEL_SIZE)
-    draw_char(window, current_pattern, (window.get_width() / 2) - char_width/2, y)
+    char_width = len(current_pattern[0]) * cfg.PIXEL_SIZE
+    draw_char(window, current_pattern, (window.get_width() / 2) - char_width / 2, y)
 
     if current_pattern == design.SIX_2:
-        draw_char(window, design.SIX_2, window.get_width() / 2 - char_width*1.666, y)
-        draw_char(window, design.SIX_2, window.get_width() / 2 + char_width*0.666, y)
+        draw_char(window, design.SIX_2, window.get_width() / 2 - char_width * 1.666, y)
+        draw_char(window, design.SIX_2, window.get_width() / 2 + char_width * 0.666, y)
+
 
 def draw_char(window, char, x, y):
     for i, row in enumerate(char):
         for j, pixel in enumerate(row):
             if pixel:
-                pygame.draw.rect(window, cfg.WHITE, (x + j * cfg.PIXEL_SIZE, y + i * cfg.PIXEL_SIZE, cfg.PIXEL_SIZE, cfg.PIXEL_SIZE))
+                pygame.draw.rect(
+                    window,
+                    cfg.WHITE,
+                    (
+                        x + j * cfg.PIXEL_SIZE,
+                        y + i * cfg.PIXEL_SIZE,
+                        cfg.PIXEL_SIZE,
+                        cfg.PIXEL_SIZE,
+                    ),
+                )
 
 
 def linear_interpolate(start_val, end_val, alpha):
     return start_val * (1 - alpha) + end_val * alpha
+
 
 def get_transition_pattern(start_pattern, end_pattern, alpha):
     transition_pattern = []

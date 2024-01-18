@@ -12,6 +12,7 @@ import random
 import cfg
 from ui import create_pixelated_logo
 
+
 class DataPoint:
     def __init__(self, snake_body):
         self.position = self.generate_random_position(snake_body)
@@ -57,7 +58,6 @@ class SpecialDataPoint(DataPoint):
         # )
         image_path = f"assets/30x30/{slug}.png"
         self.special_logo = create_pixelated_logo(image_path, cfg.WHITE)
-
 
     def draw(self, window):
         """Draw the special data point on the given window."""

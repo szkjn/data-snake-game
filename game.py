@@ -42,6 +42,7 @@ class Game:
         self.current_special_data_point = None
         self.current_special_data_point_slug = None
         self.special_data_point_collided = False
+        self.current_special_text_length = 0
 
         self.play_button_rect = pygame.Rect(100, 150, 200, 50)
         self.quit_button_rect = pygame.Rect(100, 250, 200, 50)
@@ -90,7 +91,7 @@ class Game:
             dt = self.clock.tick(cfg.SNAKE_SPEED)
 
             if self.state == "WELCOME_STATE":
-                self.frame_count += 1      
+                self.frame_count += 1
                 self.handle_welcome_page_events()
 
                 # Start morphing after a specific frame count is reached
@@ -141,12 +142,18 @@ class Game:
             elif self.state == "SPECIAL_STATE":
                 self.chars_displayed += cfg.TEXT_SPEED
 
-                full_text_displayed = self.chars_displayed > 200
+                full_text_displayed = (
+                    self.chars_displayed > self.current_special_text_length
+                )
 
                 if full_text_displayed:
                     self.handle_special_page_events()
-                
-                blink_visible = (pygame.time.get_ticks() // 500) % 2 == 0 if full_text_displayed else False
+
+                blink_visible = (
+                    (pygame.time.get_ticks() // 500) % 2 == 0
+                    if full_text_displayed
+                    else False
+                )
 
                 ui.display_special_page(
                     self.window,
@@ -155,7 +162,7 @@ class Game:
                     self.special_data_points_info,
                     self.data_point_counter,
                     self.chars_displayed,
-                    blink_visible
+                    blink_visible,
                 )
             elif self.state == "GAME_OVER_STATE":
                 self.handle_game_over_page_events()
@@ -190,6 +197,16 @@ class Game:
             self.handle_special_data_point_collision()
             self.state = "SPECIAL_STATE"
             self.chars_displayed = 0
+            self.current_special_text_length = len(
+                next(
+                    (
+                        row["text"]
+                        for row in self.special_data_points_info
+                        if row["slug"] == self.current_special_data_point_slug
+                    ),
+                    "",
+                )
+            )
             return
 
         if (
@@ -249,9 +266,9 @@ class Game:
         self.data_point_counter += 1
 
         if self.data_point_counter % cfg.SPECIALS_RATE == 0:
-            index = (self.data_point_counter // cfg.SPECIALS_RATE) % len(
-                self.slug_to_logo
-            )
+            # index = (self.data_point_counter // cfg.SPECIALS_RATE) % len(
+            #     self.slug_to_logo
+            # )
             # slug = list(self.slug_to_logo.keys())[index]
             self.create_special_data_point()
             self.data_point = None

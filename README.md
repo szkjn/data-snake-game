@@ -9,3 +9,10 @@ Snakeopoly transforms the classic Snake game into a witty commentary on Google's
 ## Gameplay:
 
 As players navigate the digital world of Snakeopoly, they consume logos representing Google's numerous acquisitions. Each logo consumed reveals a tongue-in-cheek quote about corporate overreach, blending entertainment with thought-provoking commentary. The game features "enemy blocks" such as GDPR or DuckDuckGo, symbolizing resistance against data-centric giants and adding an element of challenge to the gameplay.
+
+## TO-DO List:
+
+- Game Over page to design
+- Stop game after last special point
+- Display level change
+- Add "enemy blocks"

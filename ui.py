@@ -181,7 +181,7 @@ def display_game_over_page(window, final_score, level):
 
 
 def display_special_page(
-    window, level, slug, special_data_points_info, data_point_counter
+    window, level, slug, special_data_points_info, data_point_counter, chars_displayed
 ):
     window.fill(cfg.BLACK)
     ascii_art_file_path = "assets/ascii/evil.txt"
@@ -205,7 +205,7 @@ def display_special_page(
     )
 
     draw_multiline_text(
-        window, text, (cfg.PLAY_ZONE_WIDTH*1/3, cfg.PLAY_ZONE_HEIGHT*2/3), cfg.FONT_SIZE_L, cfg.WHITE, cfg.PLAY_ZONE_WIDTH * 0.95
+        window, text, (cfg.PLAY_ZONE_WIDTH*1/3, cfg.PLAY_ZONE_HEIGHT*2/3), cfg.FONT_SIZE_L, cfg.WHITE, cfg.PLAY_ZONE_WIDTH * 0.95, chars_displayed
     )
 
     draw_centered_text(
@@ -223,26 +223,33 @@ def display_special_page(
     pygame.display.update()
 
 
-def draw_multiline_text(surface, text, position, font_size, color, max_line_width):
+def draw_multiline_text(surface, text, position, font_size, color, max_line_width, chars_displayed):
     text = f'"{text}"'
     font = pygame.font.Font(font_path, font_size)
-    words = text.split(" ")
     space = font.size(" ")[0]  # Width of a space.
     x, y = position
     line = []
+    current_chars_count = 0
 
-    for word in words:
+    for word in text.split(" "):
+        if current_chars_count + len(word) > chars_displayed:
+            word = word[:max(0, chars_displayed - current_chars_count)]  # Trim the word to fit the chars_displayed
         word_surface = font.render(word, True, color)
         word_width, word_height = word_surface.get_size()
-        if x + word_width >= max_line_width:
-            # If the line width exceeds the limit, render the line and reset it
+
+        if current_chars_count < chars_displayed and x + word_width >= max_line_width:
             surface.blit(font.render(" ".join(line), True, color), (position[0], y))
             line = [word]
-            y += word_height  # Move to the next line
+            y += word_height
             x = position[0]
-        else:
+        elif current_chars_count < chars_displayed:
             line.append(word)
             x += word_width + space
+
+        current_chars_count += len(word) + 1  # +1 for the space
+
+        if current_chars_count >= chars_displayed:
+            break
 
     # Render the last line
     surface.blit(font.render(" ".join(line), True, color), (position[0], y))

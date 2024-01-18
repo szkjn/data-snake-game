@@ -61,3 +61,7 @@ PIXEL_SIZE = SNAKE_SIZE // 6
 MORPH_START_FRAME = 2
 MORPH_SPEED = 20
 MORPH_DISTANCE = 200
+
+
+# Special data point animation
+TEXT_SPEED = 5

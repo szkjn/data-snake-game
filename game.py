@@ -35,6 +35,8 @@ class Game:
         self.offset = 0
         self.morph_offset = 0
 
+        self.chars_displayed = 0
+
         self.data_point_counter = 0
         self.slug_to_logo = self.load_slug_to_logo()
         self.current_special_data_point = None
@@ -137,6 +139,8 @@ class Game:
                     )
 
             elif self.state == "SPECIAL_STATE":
+                self.chars_displayed += cfg.TEXT_SPEED
+
                 self.handle_special_page_events()
                 ui.display_special_page(
                     self.window,
@@ -144,6 +148,7 @@ class Game:
                     self.current_special_data_point_slug,
                     self.special_data_points_info,
                     self.data_point_counter,
+                    self.chars_displayed
                 )
             elif self.state == "GAME_OVER_STATE":
                 self.handle_game_over_page_events()

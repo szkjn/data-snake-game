@@ -141,14 +141,21 @@ class Game:
             elif self.state == "SPECIAL_STATE":
                 self.chars_displayed += cfg.TEXT_SPEED
 
-                self.handle_special_page_events()
+                full_text_displayed = self.chars_displayed > 200
+
+                if full_text_displayed:
+                    self.handle_special_page_events()
+                
+                blink_visible = (pygame.time.get_ticks() // 500) % 2 == 0 if full_text_displayed else False
+
                 ui.display_special_page(
                     self.window,
                     self.level,
                     self.current_special_data_point_slug,
                     self.special_data_points_info,
                     self.data_point_counter,
-                    self.chars_displayed
+                    self.chars_displayed,
+                    blink_visible
                 )
             elif self.state == "GAME_OVER_STATE":
                 self.handle_game_over_page_events()
@@ -182,6 +189,7 @@ class Game:
         elif self.check_collision_with_special_data_point():
             self.handle_special_data_point_collision()
             self.state = "SPECIAL_STATE"
+            self.chars_displayed = 0
             return
 
         if (

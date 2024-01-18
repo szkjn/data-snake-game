@@ -181,7 +181,7 @@ def display_game_over_page(window, final_score, level):
 
 
 def display_special_page(
-    window, level, slug, special_data_points_info, data_point_counter, chars_displayed
+    window, level, slug, special_data_points_info, data_point_counter, chars_displayed, blink_visible=True
 ):
     window.fill(cfg.BLACK)
     ascii_art_file_path = "assets/ascii/evil.txt"
@@ -208,14 +208,16 @@ def display_special_page(
         window, text, (cfg.PLAY_ZONE_WIDTH*1/3, cfg.PLAY_ZONE_HEIGHT*2/3), cfg.FONT_SIZE_L, cfg.WHITE, cfg.PLAY_ZONE_WIDTH * 0.95, chars_displayed
     )
 
-    draw_centered_text(
-        window,
-        "(R)ESUME GAME OR (Q)UIT LIKE A COWARD",
-        window.get_size()[1] - 2 * cfg.SNAKE_SIZE,
-        cfg.FONT_SIZE_L,
-        cfg.WHITE,
-    )
-
+    if chars_displayed >= len(text):
+        if blink_visible:
+            draw_centered_text(
+                window,
+                "(R)ESUME GAME OR (Q)UIT LIKE A COWARD",
+                window.get_size()[1] - 2 * cfg.SNAKE_SIZE,
+                cfg.FONT_SIZE_L,
+                cfg.WHITE,
+            )
+            
     draw_play_zone(window)
     draw_score_counter(window, data_point_counter)
     draw_level(window, level)

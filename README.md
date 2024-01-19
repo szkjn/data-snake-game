@@ -12,7 +12,5 @@ As players navigate the digital world of Snakeopoly, they consume logos represen
 
 ## TO-DO List:
 
-- Game Over page to design
-- Stop game after last special point
 - Display level change
 - Add "enemy blocks"

@@ -114,7 +114,7 @@ def display_play_page(
 def display_welcome_page(window, morph_offset, blink_visible):
 
     window.fill(cfg.BLACK)
-    ascii_art_file_path = "assets/ascii/skull.txt"
+    # ascii_art_file_path = "assets/ascii/skull.txt"
 
     draw_centered_text(
         window,
@@ -140,6 +140,15 @@ def display_welcome_page(window, morph_offset, blink_visible):
         cfg.WHITE,
     )
 
+    # draw_centered_logo(
+    #     window,
+    #     "assets/120x120/googlevil.png",
+    #     cfg.PLAY_ZONE_HEIGHT * 0.7,
+    #     (200,20,20),
+    #     pixel_size=1,
+    #     target_size=(cfg.SNAKE_SIZE*3, cfg.SNAKE_SIZE*3),
+    # )
+
     draw_welcome_animation(window, cfg.PLAY_ZONE_HEIGHT * 0.7, morph_offset)
 
     if blink_visible:
@@ -159,7 +168,11 @@ def display_game_over_page(window, final_score, level):
     window.fill(cfg.BLACK)
 
     draw_centered_text(
-        window, "GAME OVER", cfg.PLAY_ZONE_HEIGHT * 0.2, cfg.FONT_SIZE_XL, cfg.WHITE
+        window,
+        "GAME OVER",
+        cfg.PLAY_ZONE_HEIGHT * 0.15,
+        cfg.FONT_SIZE_XXL,
+        cfg.WHITE,
     )
 
     draw_centered_text(
@@ -177,6 +190,39 @@ def display_game_over_page(window, final_score, level):
         cfg.FONT_SIZE_XL,
         cfg.WHITE,
     )
+
+    draw_centered_text(
+        window,
+        "Oops! You've been out-monopolized.",
+        cfg.PLAY_ZONE_HEIGHT * 0.65,
+        cfg.FONT_SIZE_L,
+        cfg.WHITE,
+    )
+
+    draw_centered_text(
+        window,
+        "But don't worry, your data",
+        cfg.PLAY_ZONE_HEIGHT * 0.75,
+        cfg.FONT_SIZE_L,
+        cfg.WHITE,
+    )
+
+    draw_centered_text(
+        window,
+        "will live on forever with us.",
+        cfg.PLAY_ZONE_HEIGHT * 0.85,
+        cfg.FONT_SIZE_L,
+        cfg.WHITE,
+    )
+
+    # draw_centered_logo(
+    #     window,
+    #     "assets/120x120/googlevil.png",
+    #     cfg.PLAY_ZONE_HEIGHT * 0.85,
+    #     cfg.WHITE,
+    #     pixel_size=1,
+    #     target_size=(cfg.SNAKE_SIZE*5, cfg.SNAKE_SIZE*5),
+    # )
 
     draw_centered_text(
         window,
@@ -243,7 +289,7 @@ def display_special_page(
         (cfg.PLAY_ZONE_WIDTH * 1 / 3, cfg.PLAY_ZONE_HEIGHT * 2 / 3),
         cfg.FONT_SIZE_L,
         cfg.WHITE,
-        cfg.PLAY_ZONE_WIDTH * 0.95,
+        cfg.PLAY_ZONE_WIDTH * 0.85,
         chars_displayed,
     )
 
@@ -262,6 +308,62 @@ def display_special_page(
     draw_level(window, level)
 
     pygame.display.update()
+
+
+def display_goal_page(window):
+    window.fill(cfg.BLACK)
+
+    draw_centered_text(
+        window,
+        "CONGRATULATIONS !",
+        cfg.PLAY_ZONE_HEIGHT * 0.15,
+        cfg.FONT_SIZE_XXL,
+        cfg.WHITE,
+    )
+
+    draw_centered_text(
+        window,
+        "Master of the Digital Panopticon !",
+        cfg.PLAY_ZONE_HEIGHT * 0.35,
+        cfg.FONT_SIZE_XL,
+        cfg.WHITE,
+    )
+
+    draw_centered_text(
+        window,
+        "In the world of Surveillance Capitalism,",
+        cfg.PLAY_ZONE_HEIGHT * 0.55,
+        cfg.FONT_SIZE_XL,
+        cfg.WHITE,
+    )
+
+    draw_centered_text(
+        window,
+        "you stand unrivaled !",
+        cfg.PLAY_ZONE_HEIGHT * 0.65,
+        cfg.FONT_SIZE_XL,
+        cfg.WHITE,
+    )
+
+    draw_centered_text(
+        window,
+        "A true data supremacist !!!",
+        cfg.PLAY_ZONE_HEIGHT * 0.85,
+        cfg.FONT_SIZE_XL,
+        cfg.WHITE,
+    )
+
+    draw_centered_text(
+        window,
+        "RE(P)LAY GAME OR QUIT LIKE A (Q)OWARD",
+        window.get_size()[1] - 2 * cfg.SNAKE_SIZE,
+        cfg.FONT_SIZE_L,
+        cfg.WHITE,
+    )
+
+    draw_play_zone(window)
+    pygame.display.update()
+
 
 
 def draw_multiline_text(

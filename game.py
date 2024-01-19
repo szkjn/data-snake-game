@@ -174,6 +174,10 @@ class Game:
             elif self.state == "GAME_OVER_STATE":
                 self.handle_game_over_page_events()
                 ui.display_game_over_page(self.window, self.final_score, self.level)
+            
+            elif self.state == "GOAL_STATE":
+                self.handle_goal_page_events()
+                ui.display_goal_page(self.window)
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -200,23 +204,29 @@ class Game:
         if self.check_collision_with_data_point():
             self.handle_data_point_collision()
             return
+        
         elif self.check_collision_with_special_data_point():
             self.handle_special_data_point_collision()
-            self.state = "SPECIAL_STATE"
-            self.chars_displayed = 0
-            self.current_special_text_length = len(
-                next(
-                    (
-                        row["text"]
-                        for row in self.special_data_points_info
-                        if row["slug"] == self.current_special_data_point_slug
-                    ),
-                    "",
-                )
-            )
-            return
 
-        if (
+            if len(self.special_data_points_queue) == 0:
+                self.state = "GOAL_STATE"
+
+            else:
+                self.state = "SPECIAL_STATE"
+                self.chars_displayed = 0
+                self.current_special_text_length = len(
+                    next(
+                        (
+                            row["text"]
+                            for row in self.special_data_points_info
+                            if row["slug"] == self.current_special_data_point_slug
+                        ),
+                        "",
+                    )
+                )
+                return
+
+        elif (
             self.snake.check_collision_with_self()
             or self.snake.check_collision_with_boundaries(cfg.WINDOW_SIZE)
         ):
@@ -313,6 +323,16 @@ class Game:
                     self.running = False
 
     def handle_game_over_page_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_p:
+                    self.state = "PLAY_STATE"
+                elif event.key == pygame.K_q:
+                    self.running = False
+
+    def handle_goal_page_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
